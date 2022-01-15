@@ -68,30 +68,21 @@ public class KVConfigManager {
 
     // 写入配置
     public void putKVConfig(final String namespace, final String key, final String value) {
-        try {
-            this.lock.writeLock().lockInterruptibly();
-            try {
-                // configTable getOrCreate namespace 指代的 HashMap
-                HashMap<String, String> kvTable = this.configTable.get(namespace);
-                if (null == kvTable) {
-                    kvTable = new HashMap<String, String>();
-                    this.configTable.put(namespace, kvTable);
-                    log.info("putKVConfig create new Namespace {}", namespace);
-                }
+        // configTable getOrCreate namespace 指代的 HashMap
+        HashMap<String, String> kvTable = this.configTable.get(namespace);
+        if (null == kvTable) {
+            kvTable = new HashMap<String, String>();
+            this.configTable.put(namespace, kvTable);
+            log.info("putKVConfig create new Namespace {}", namespace);
+        }
 
-                final String prev = kvTable.put(key, value);
-                if (null != prev) {
-                    log.info("putKVConfig update config item, Namespace: {} Key: {} Value: {}",
-                            namespace, key, value);
-                } else {
-                    log.info("putKVConfig create new config item, Namespace: {} Key: {} Value: {}",
-                            namespace, key, value);
-                }
-            } finally {
-                this.lock.writeLock().unlock();
-            }
-        } catch (InterruptedException e) {
-            log.error("putKVConfig InterruptedException", e);
+        final String prev = kvTable.put(key, value);
+        if (null != prev) {
+            log.info("putKVConfig update config item, Namespace: {} Key: {} Value: {}",
+                    namespace, key, value);
+        } else {
+            log.info("putKVConfig create new config item, Namespace: {} Key: {} Value: {}",
+                    namespace, key, value);
         }
 
         // 持久化
@@ -100,119 +91,67 @@ public class KVConfigManager {
 
     // 持久化 
     public void persist() {
-        try {
-            this.lock.readLock().lockInterruptibly();
+        // 序列化为一个 JSON 字符串
+        KVConfigSerializeWrapper kvConfigSerializeWrapper = new KVConfigSerializeWrapper();
+        kvConfigSerializeWrapper.setConfigTable(this.configTable);
+
+        String content = kvConfigSerializeWrapper.toJson();
+        if (null != content) {
+            // 将 JSON 字符串落盘
             try {
-                // 序列化为一个 JSON 字符串
-                KVConfigSerializeWrapper kvConfigSerializeWrapper = new KVConfigSerializeWrapper();
-                kvConfigSerializeWrapper.setConfigTable(this.configTable);
-
-                String content = kvConfigSerializeWrapper.toJson();
-
-                if (null != content) {
-                    // 将 JSON 字符串落盘
-                    MixAll.string2File(content, this.namesrvController.getNamesrvConfig().getKvConfigPath());
-                }
+                MixAll.string2File(content, this.namesrvController.getNamesrvConfig().getKvConfigPath());
             } catch (IOException e) {
-                log.error("persist kvconfig Exception, "
-                        + this.namesrvController.getNamesrvConfig().getKvConfigPath(), e);
-            } finally {
-                this.lock.readLock().unlock();
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            log.error("persist InterruptedException", e);
         }
 
     }
 
     // 删除 configTable 指定命名空间下的 key
     public void deleteKVConfig(final String namespace, final String key) {
-        try {
-            this.lock.writeLock().lockInterruptibly();
-            try {
-                HashMap<String, String> kvTable = this.configTable.get(namespace);
-                if (null != kvTable) {
-                    String value = kvTable.remove(key);
-                    log.info("deleteKVConfig delete a config item, Namespace: {} Key: {} Value: {}",
-                            namespace, key, value);
-                }
-            } finally {
-                this.lock.writeLock().unlock();
-            }
-        } catch (InterruptedException e) {
-            log.error("deleteKVConfig InterruptedException", e);
+        HashMap<String, String> kvTable = this.configTable.get(namespace);
+        if (null != kvTable) {
+            String value = kvTable.remove(key);
+            log.info("deleteKVConfig delete a config item, Namespace: {} Key: {} Value: {}",
+                    namespace, key, value);
         }
-
         this.persist();
     }
 
     // 获取指定 namespace 的 KVList
     public byte[] getKVListByNamespace(final String namespace) {
-        try {
-            this.lock.readLock().lockInterruptibly();
-            try {
-                HashMap<String, String> kvTable = this.configTable.get(namespace);
-                if (null != kvTable) {
-                    KVTable table = new KVTable();
-                    table.setTable(kvTable);
-                    // 拿到 namespace 对应的 HashMap，然后序列化
-                    return table.encode();
-                }
-            } finally {
-                this.lock.readLock().unlock();
-            }
-        } catch (InterruptedException e) {
-            log.error("getKVListByNamespace InterruptedException", e);
+        HashMap<String, String> kvTable = this.configTable.get(namespace);
+        if (null != kvTable) {
+            KVTable table = new KVTable();
+            table.setTable(kvTable);
+            // 拿到 namespace 对应的 HashMap，然后序列化
+            return table.encode();
         }
-
         return null;
     }
 
     // 获取执行命名空间中 key 对应的 value
     public String getKVConfig(final String namespace, final String key) {
-        try {
-            this.lock.readLock().lockInterruptibly();
-            try {
-                HashMap<String, String> kvTable = this.configTable.get(namespace);
-                if (null != kvTable) {
-                    return kvTable.get(key);
-                }
-            } finally {
-                this.lock.readLock().unlock();
-            }
-        } catch (InterruptedException e) {
-            log.error("getKVConfig InterruptedException", e);
+        HashMap<String, String> kvTable = this.configTable.get(namespace);
+        if (null != kvTable) {
+            return kvTable.get(key);
         }
-
         return null;
     }
 
     // 定期打印所有 kv pair
     public void printAllPeriodically() {
-        try {
-            this.lock.readLock().lockInterruptibly();
-            try {
-                log.info("--------------------------------------------------------");
-
-                {
-                    log.info("configTable SIZE: {}", this.configTable.size());
-                    Iterator<Entry<String, HashMap<String, String>>> it =
-                            this.configTable.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Entry<String, HashMap<String, String>> next = it.next();
-                        Iterator<Entry<String, String>> itSub = next.getValue().entrySet().iterator();
-                        while (itSub.hasNext()) {
-                            Entry<String, String> nextSub = itSub.next();
-                            log.info("configTable NS: {} Key: {} Value: {}", next.getKey(), nextSub.getKey(),
-                                    nextSub.getValue());
-                        }
-                    }
-                }
-            } finally {
-                this.lock.readLock().unlock();
+        log.info("configTable SIZE: {}", this.configTable.size());
+        Iterator<Entry<String, HashMap<String, String>>> it =
+                this.configTable.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<String, HashMap<String, String>> next = it.next();
+            Iterator<Entry<String, String>> itSub = next.getValue().entrySet().iterator();
+            while (itSub.hasNext()) {
+                Entry<String, String> nextSub = itSub.next();
+                log.info("configTable NS: {} Key: {} Value: {}", next.getKey(), nextSub.getKey(),
+                        nextSub.getValue());
             }
-        } catch (InterruptedException e) {
-            log.error("printAllPeriodically InterruptedException", e);
         }
     }
 }
