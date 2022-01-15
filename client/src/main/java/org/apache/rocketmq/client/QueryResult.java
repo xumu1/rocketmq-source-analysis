@@ -17,6 +17,7 @@
 package org.apache.rocketmq.client;
 
 import java.util.List;
+
 import org.apache.rocketmq.common.message.MessageExt;
 
 // query 的结果
@@ -40,6 +41,6 @@ public class QueryResult {
     @Override
     public String toString() {
         return "QueryResult [indexLastUpdateTimestamp=" + indexLastUpdateTimestamp + ", messageList="
-            + messageList + "]";
+                + messageList + "]";
     }
 }

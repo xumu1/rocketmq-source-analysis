@@ -63,13 +63,13 @@ public class ConsumerFilterManagerTest {
         String newExpr = "a between 10,20";
 
         assertThat(filterManager.register("topic9", "CID_9", newExpr, ExpressionType.SQL92, System.currentTimeMillis() + 1))
-            .isFalse();
+                .isFalse();
         assertThat(filterManager.get("topic9", "CID_9")).isNull();
 
         newExpr = "a between 10 AND 20";
 
         assertThat(filterManager.register("topic9", "CID_9", newExpr, ExpressionType.SQL92, System.currentTimeMillis() + 1))
-            .isTrue();
+                .isTrue();
 
         ConsumerFilterData filterData = filterManager.get("topic9", "CID_9");
 
@@ -107,7 +107,7 @@ public class ConsumerFilterManagerTest {
 
         // new version
         assertThat(filterManager.register(
-            "topic9", "CID_9", "a is not null", ExpressionType.SQL92, System.currentTimeMillis() + 1000
+                "topic9", "CID_9", "a is not null", ExpressionType.SQL92, System.currentTimeMillis() + 1000
         )).isTrue();
 
         ConsumerFilterData newFilter = filterManager.get("topic9", "CID_9");
@@ -116,7 +116,7 @@ public class ConsumerFilterManagerTest {
 
         // same version
         assertThat(filterManager.register(
-            "topic9", "CID_9", "a is null", ExpressionType.SQL92, newFilter.getClientVersion()
+                "topic9", "CID_9", "a is null", ExpressionType.SQL92, newFilter.getClientVersion()
         )).isFalse();
 
         ConsumerFilterData filterData1 = filterManager.get("topic9", "CID_9");
@@ -138,11 +138,11 @@ public class ConsumerFilterManagerTest {
 
         //reAlive
         filterManager.register(
-            filterData.getTopic(),
-            filterData.getConsumerGroup(),
-            filterData.getExpression(),
-            filterData.getExpressionType(),
-            System.currentTimeMillis()
+                filterData.getTopic(),
+                filterData.getConsumerGroup(),
+                filterData.getExpression(),
+                filterData.getExpressionType(),
+                System.currentTimeMillis()
         );
 
         ConsumerFilterData newFilterData = filterManager.get("topic9", "CID_9");
@@ -158,11 +158,11 @@ public class ConsumerFilterManagerTest {
         for (int i = 0; i < 10; i++) {
             try {
                 subscriptionDatas.add(
-                    FilterAPI.build(
-                        "topic" + i,
-                        "a is not null and a > " + i,
-                        ExpressionType.SQL92
-                    )
+                        FilterAPI.build(
+                                "topic" + i,
+                                "a is not null and a > " + i,
+                                ExpressionType.SQL92
+                        )
                 );
             } catch (Exception e) {
                 e.printStackTrace();

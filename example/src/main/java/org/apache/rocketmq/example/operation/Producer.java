@@ -47,10 +47,10 @@ public class Producer {
             for (int i = 0; i < Integer.parseInt(msgCount); i++) {
                 try {
                     Message msg = new Message(
-                        topic,
-                        tags,
-                        keys,
-                        ("Hello RocketMQ " + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
+                            topic,
+                            tags,
+                            keys,
+                            ("Hello RocketMQ " + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
                     SendResult sendResult = producer.send(msg);
                     System.out.printf("%-8d %s%n", i, sendResult);
                 } catch (Exception e) {

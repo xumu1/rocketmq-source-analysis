@@ -18,6 +18,7 @@ package org.apache.rocketmq.example.operation;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
@@ -51,7 +52,7 @@ public class Consumer {
 
                 @Override
                 public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,
-                    ConsumeConcurrentlyContext context) {
+                                                                ConsumeConcurrentlyContext context) {
                     long currentTimes = this.consumeTimes.incrementAndGet();
                     System.out.printf("%-8d %s%n", currentTimes, msgs);
                     if (Boolean.parseBoolean(returnFailedHalf)) {

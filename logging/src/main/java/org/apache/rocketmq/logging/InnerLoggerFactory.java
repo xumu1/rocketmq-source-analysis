@@ -233,7 +233,7 @@ public class InnerLoggerFactory extends InternalLoggerFactory {
         public static FormattingTuple format(String messagePattern, Object arg1, Object arg2) {
             return arrayFormat(messagePattern, new Object[]{arg1, arg2});
         }
-        
+
         // 判断 argArray 数组最后一个数组是否为 Throwable 对象
         static Throwable getThrowableCandidate(Object[] argArray) {
             if (argArray != null && argArray.length != 0) {
@@ -343,7 +343,7 @@ public class InnerLoggerFactory extends InternalLoggerFactory {
 
             }
         }
-        
+
         // 直接将 o.toString() 加入 sbuf
         private static void safeObjectAppend(StringBuilder sbuf, Object o) {
             try {
@@ -356,7 +356,7 @@ public class InnerLoggerFactory extends InternalLoggerFactory {
             }
 
         }
-        
+
         // 和 deeplyAppendParameter 循环调用，处理 Object 数组
         private static void objectArrayAppend(StringBuilder sbuf, Object[] a, Map<Object[], Object> seenMap) {
             if (seenMap == null) {

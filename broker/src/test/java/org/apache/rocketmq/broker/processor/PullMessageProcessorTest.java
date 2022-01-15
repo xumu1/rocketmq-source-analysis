@@ -18,11 +18,13 @@ package org.apache.rocketmq.broker.processor;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.rocketmq.broker.BrokerController;
 import org.apache.rocketmq.broker.client.ClientChannelInfo;
 import org.apache.rocketmq.broker.filter.ExpressionMessageFilter;
@@ -85,13 +87,13 @@ public class PullMessageProcessorTest {
         clientChannelInfo = new ClientChannelInfo(mockChannel);
         ConsumerData consumerData = createConsumerData(group, topic);
         brokerController.getConsumerManager().registerConsumer(
-            consumerData.getGroupName(),
-            clientChannelInfo,
-            consumerData.getConsumeType(),
-            consumerData.getMessageModel(),
-            consumerData.getConsumeFromWhere(),
-            consumerData.getSubscriptionDataSet(),
-            false);
+                consumerData.getGroupName(),
+                clientChannelInfo,
+                consumerData.getConsumeType(),
+                consumerData.getMessageModel(),
+                consumerData.getConsumeFromWhere(),
+                consumerData.getSubscriptionDataSet(),
+                false);
     }
 
     @Test

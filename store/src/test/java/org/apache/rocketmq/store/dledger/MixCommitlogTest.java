@@ -17,6 +17,7 @@
 package org.apache.rocketmq.store.dledger;
 
 import java.util.UUID;
+
 import org.apache.rocketmq.store.DefaultMessageStore;
 import org.apache.rocketmq.store.StoreTestBase;
 import org.apache.rocketmq.store.config.StorePathConfigHelper;
@@ -26,17 +27,16 @@ import org.junit.Test;
 public class MixCommitlogTest extends MessageStoreTestBase {
 
 
-
     @Test
     public void testFallBehindCQ() throws Exception {
-        String base =  createBaseDir();
+        String base = createBaseDir();
         String topic = UUID.randomUUID().toString();
         String peers = String.format("n0-localhost:%d", nextPort());
         String group = UUID.randomUUID().toString();
         {
             DefaultMessageStore originalStore = createMessageStore(base, false);
             doPutMessages(originalStore, topic, 0, 1000, 0);
-            Assert.assertEquals(11, originalStore.getMaxPhyOffset()/originalStore.getMessageStoreConfig().getMappedFileSizeCommitLog());
+            Assert.assertEquals(11, originalStore.getMaxPhyOffset() / originalStore.getMessageStoreConfig().getMappedFileSizeCommitLog());
             Thread.sleep(500);
             Assert.assertEquals(0, originalStore.getMinOffsetInQueue(topic, 0));
             Assert.assertEquals(1000, originalStore.getMaxOffsetInQueue(topic, 0));
@@ -66,10 +66,9 @@ public class MixCommitlogTest extends MessageStoreTestBase {
     }
 
 
-
     @Test
     public void testPutAndGet() throws Exception {
-        String base =  createBaseDir();
+        String base = createBaseDir();
         String topic = UUID.randomUUID().toString();
         String peers = String.format("n0-localhost:%d", nextPort());
         String group = UUID.randomUUID().toString();
@@ -130,7 +129,7 @@ public class MixCommitlogTest extends MessageStoreTestBase {
 
     @Test
     public void testDeleteExpiredFiles() throws Exception {
-        String base =  createBaseDir();
+        String base = createBaseDir();
         String topic = UUID.randomUUID().toString();
         String peers = String.format("n0-localhost:%d", nextPort());
         String group = UUID.randomUUID().toString();

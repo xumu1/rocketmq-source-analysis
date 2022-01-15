@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import org.apache.rocketmq.remoting.common.TlsMode;
 import org.apache.rocketmq.remoting.exception.RemotingSendRequestException;
 import org.apache.rocketmq.remoting.netty.NettyClientConfig;
@@ -106,8 +107,7 @@ public class TlsTest {
             tlsClientKeyPath = getCertsPath("badClient.key");
             tlsClientCertPath = getCertsPath("badClient.pem");
             tlsServerAuthClient = false;
-        }
-        else if ("noClientAuthFailure".equals(name.getMethodName())) {
+        } else if ("noClientAuthFailure".equals(name.getMethodName())) {
             //Clear the client cert config to ensure produce the handshake error
             tlsClientKeyPath = "";
             tlsClientCertPath = "";

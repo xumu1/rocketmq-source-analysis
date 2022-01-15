@@ -85,8 +85,8 @@ public class DefaultMQProducerTest {
         producer = new DefaultMQProducer(producerGroupTemp);
         producer.setNamesrvAddr("127.0.0.1:9876");
         producer.setCompressMsgBodyOverHowmuch(16);
-        message = new Message(topic, new byte[] {'a'});
-        zeroMsg = new Message(topic, new byte[] {});
+        message = new Message(topic, new byte[]{'a'});
+        zeroMsg = new Message(topic, new byte[]{});
         bigMessage = new Message(topic, "This is a very huge message!".getBytes());
 
         producer.start();
@@ -102,10 +102,10 @@ public class DefaultMQProducerTest {
         producer.getDefaultMQProducerImpl().getmQClientFactory().registerProducer(producerGroupTemp, producer.getDefaultMQProducerImpl());
 
         when(mQClientAPIImpl.sendMessage(anyString(), anyString(), any(Message.class), any(SendMessageRequestHeader.class), anyLong(), any(CommunicationMode.class),
-            nullable(SendMessageContext.class), any(DefaultMQProducerImpl.class))).thenCallRealMethod();
+                nullable(SendMessageContext.class), any(DefaultMQProducerImpl.class))).thenCallRealMethod();
         when(mQClientAPIImpl.sendMessage(anyString(), anyString(), any(Message.class), any(SendMessageRequestHeader.class), anyLong(), any(CommunicationMode.class),
-            nullable(SendCallback.class), nullable(TopicPublishInfo.class), nullable(MQClientInstance.class), anyInt(), nullable(SendMessageContext.class), any(DefaultMQProducerImpl.class)))
-            .thenReturn(createSendResult(SendStatus.SEND_OK));
+                nullable(SendCallback.class), nullable(TopicPublishInfo.class), nullable(MQClientInstance.class), anyInt(), nullable(SendMessageContext.class), any(DefaultMQProducerImpl.class)))
+                .thenReturn(createSendResult(SendStatus.SEND_OK));
     }
 
     @After
@@ -184,6 +184,7 @@ public class DefaultMQProducerTest {
         });
         countDownLatch.await(3000L, TimeUnit.MILLISECONDS);
     }
+
     @Test
     public void testSendMessageAsync() throws RemotingException, MQClientException, InterruptedException {
         final AtomicInteger cc = new AtomicInteger(0);
@@ -211,12 +212,12 @@ public class DefaultMQProducerTest {
         Message message = new Message();
         message.setTopic("test");
         message.setBody("hello world".getBytes());
-        producer.send(new Message(),sendCallback);
-        producer.send(message,sendCallback,1000);
-        producer.send(message,new MessageQueue(),sendCallback);
-        producer.send(new Message(),new MessageQueue(),sendCallback,1000);
-        producer.send(new Message(),messageQueueSelector,null,sendCallback);
-        producer.send(message,messageQueueSelector,null,sendCallback,1000);
+        producer.send(new Message(), sendCallback);
+        producer.send(message, sendCallback, 1000);
+        producer.send(message, new MessageQueue(), sendCallback);
+        producer.send(new Message(), new MessageQueue(), sendCallback, 1000);
+        producer.send(new Message(), messageQueueSelector, null, sendCallback);
+        producer.send(message, messageQueueSelector, null, sendCallback, 1000);
 
         countDownLatch.await(3000L, TimeUnit.MILLISECONDS);
         assertThat(cc.get()).isEqualTo(6);
@@ -306,7 +307,7 @@ public class DefaultMQProducerTest {
         producer.setCallbackExecutor(customized);
 
         NettyRemotingClient remotingClient = (NettyRemotingClient) producer.getDefaultMQProducerImpl()
-            .getmQClientFactory().getMQClientAPIImpl().getRemotingClient();
+                .getmQClientFactory().getMQClientAPIImpl().getRemotingClient();
 
         assertThat(remotingClient.getCallbackExecutor()).isEqualTo(customized);
     }

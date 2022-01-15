@@ -17,6 +17,7 @@
 package org.apache.rocketmq.common.admin;
 
 import java.util.HashMap;
+
 import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.remoting.protocol.RemotingSerializable;
 

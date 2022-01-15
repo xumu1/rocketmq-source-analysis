@@ -44,15 +44,16 @@ public class ProducerManager {
     private final Lock groupChannelLock = new ReentrantLock();
     // 按照 producer group 对生产者进行管理
     private final HashMap<String /* group name */, HashMap<Channel, ClientChannelInfo>> groupChannelTable =
-        new HashMap<String, HashMap<Channel, ClientChannelInfo>>();
+            new HashMap<String, HashMap<Channel, ClientChannelInfo>>();
     private PositiveAtomicCounter positiveAtomicCounter = new PositiveAtomicCounter();
+
     public ProducerManager() {
     }
 
     // 返回 groupChannelTable 的拷贝，不能直接返回
     public HashMap<String, HashMap<Channel, ClientChannelInfo>> getGroupChannelTable() {
         HashMap<String /* group name */, HashMap<Channel, ClientChannelInfo>> newGroupChannelTable =
-            new HashMap<String, HashMap<Channel, ClientChannelInfo>>();
+                new HashMap<String, HashMap<Channel, ClientChannelInfo>>();
         try {
             if (this.groupChannelLock.tryLock(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
                 try {
@@ -73,7 +74,7 @@ public class ProducerManager {
             if (this.groupChannelLock.tryLock(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
                 try {
                     for (final Map.Entry<String, HashMap<Channel, ClientChannelInfo>> entry : this.groupChannelTable
-                        .entrySet()) {
+                            .entrySet()) {
                         final String group = entry.getKey();  // producer group name
                         final HashMap<Channel, ClientChannelInfo> chlMap = entry.getValue();
 
@@ -82,14 +83,14 @@ public class ProducerManager {
                             Entry<Channel, ClientChannelInfo> item = it.next();
                             // final Integer id = item.getKey();
                             final ClientChannelInfo info = item.getValue();
-                            
+
                             // 当前时间 - 上次更新时间
                             long diff = System.currentTimeMillis() - info.getLastUpdateTimestamp();
                             if (diff > CHANNEL_EXPIRED_TIMEOUT) {
                                 it.remove();
                                 log.warn(
-                                    "SCAN: remove expired channel[{}] from ProducerManager groupChannelTable, producer group name: {}",
-                                    RemotingHelper.parseChannelRemoteAddr(info.getChannel()), group);
+                                        "SCAN: remove expired channel[{}] from ProducerManager groupChannelTable, producer group name: {}",
+                                        RemotingHelper.parseChannelRemoteAddr(info.getChannel()), group);
                                 RemotingUtil.closeChannel(info.getChannel());
                             }
                         }
@@ -113,16 +114,16 @@ public class ProducerManager {
                 if (this.groupChannelLock.tryLock(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
                     try {
                         for (final Map.Entry<String, HashMap<Channel, ClientChannelInfo>> entry : this.groupChannelTable
-                            .entrySet()) {
+                                .entrySet()) {
                             final String group = entry.getKey();
                             final HashMap<Channel, ClientChannelInfo> clientChannelInfoTable =
-                                entry.getValue();
+                                    entry.getValue();
                             final ClientChannelInfo clientChannelInfo =
-                                clientChannelInfoTable.remove(channel);
+                                    clientChannelInfoTable.remove(channel);
                             if (clientChannelInfo != null) {
                                 log.info(
-                                    "NETTY EVENT: remove channel[{}][{}] from ProducerManager groupChannelTable, producer group: {}",
-                                    clientChannelInfo.toString(), remoteAddr, group);
+                                        "NETTY EVENT: remove channel[{}][{}] from ProducerManager groupChannelTable, producer group: {}",
+                                        clientChannelInfo.toString(), remoteAddr, group);
                             }
 
                         }
@@ -157,7 +158,7 @@ public class ProducerManager {
                     if (null == clientChannelInfoFound) {
                         channelTable.put(clientChannelInfo.getChannel(), clientChannelInfo);
                         log.info("new producer connected, group: {} channel: {}", group,
-                            clientChannelInfo.toString());
+                                clientChannelInfo.toString());
                     }
                 } finally {
                     this.groupChannelLock.unlock();
@@ -186,7 +187,7 @@ public class ProducerManager {
                         ClientChannelInfo old = channelTable.remove(clientChannelInfo.getChannel());
                         if (old != null) {
                             log.info("unregister a producer[{}] from groupChannelTable {}", group,
-                                clientChannelInfo.toString());
+                                    clientChannelInfo.toString());
                         }
 
                         if (channelTable.isEmpty()) {
@@ -218,7 +219,7 @@ public class ProducerManager {
                 log.warn("Channel list is empty. groupId={}", groupId);
                 return null;
             }
-            
+
             // 这里只 incrementAndGet 一次，后面重试都是本地 ++
             int index = positiveAtomicCounter.incrementAndGet() % size;
             Channel channel = channelList.get(index);

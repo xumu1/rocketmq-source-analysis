@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.rocketmq.common.annotation.ImportantField;
 import org.apache.rocketmq.common.constant.LoggerName;
 import org.apache.rocketmq.common.help.FAQUrl;
@@ -252,7 +253,7 @@ public class MixAll {
 
     // 打印对象属性，onlyImportantField 参数指示是否仅打印重要的字段
     public static void printObjectProperties(final InternalLogger logger, final Object object,
-        final boolean onlyImportantField) {
+                                             final boolean onlyImportantField) {
         Field[] fields = object.getClass().getDeclaredFields();
         for (Field field : fields) {
             // 只处理非静态字段
@@ -269,7 +270,7 @@ public class MixAll {
                     } catch (IllegalAccessException e) {
                         log.error("Failed to obtain object properties", e);
                     }
-                    
+
                     // 如果 onlyImportantField 为 true，只打印加了 ImportantField 注解的字段
                     if (onlyImportantField) {
                         Annotation annotation = field.getAnnotation(ImportantField.class);

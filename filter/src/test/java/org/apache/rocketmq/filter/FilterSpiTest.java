@@ -74,7 +74,7 @@ public class FilterSpiTest {
     public void testGet() {
         try {
             assertThat((Boolean) FilterFactory.INSTANCE.get(ExpressionType.SQL92).compile("a is not null and a > 0")
-                .evaluate(new EmptyEvaluationContext())).isFalse();
+                    .evaluate(new EmptyEvaluationContext())).isFalse();
         } catch (Exception e) {
             e.printStackTrace();
             assertThat(Boolean.FALSE).isTrue();

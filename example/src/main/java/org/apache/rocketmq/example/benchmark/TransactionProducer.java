@@ -24,6 +24,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.LocalTransactionExecuter;
 import org.apache.rocketmq.client.producer.LocalTransactionState;
@@ -73,12 +74,12 @@ public class TransactionProducer {
                     Long[] end = snapshotList.getLast();
 
                     final long sendTps =
-                        (long) (((end[3] - begin[3]) / (double) (end[0] - begin[0])) * 1000L);
+                            (long) (((end[3] - begin[3]) / (double) (end[0] - begin[0])) * 1000L);
                     final double averageRT = (end[5] - begin[5]) / (double) (end[3] - begin[3]);
 
                     System.out.printf(
-                        "Send TPS: %d Max RT: %d Average RT: %7.3f Send Failed: %d Response Failed: %d transaction checkCount: %d %n",
-                        sendTps, statsBenchmark.getSendMessageMaxRT().get(), averageRT, end[2], end[4], end[6]);
+                            "Send TPS: %d Max RT: %d Average RT: %7.3f Send Failed: %d Response Failed: %d transaction checkCount: %d %n",
+                            sendTps, statsBenchmark.getSendMessageMaxRT().get(), averageRT, end[2], end[4], end[6]);
                 }
             }
 
@@ -93,7 +94,7 @@ public class TransactionProducer {
         }, 10000, 10000);
 
         final TransactionCheckListener transactionCheckListener =
-            new TransactionCheckListenerBImpl(ischeckffalse, statsBenchmark);
+                new TransactionCheckListenerBImpl(ischeckffalse, statsBenchmark);
         final TransactionMQProducer producer = new TransactionMQProducer("benchmark_transaction_producer");
         producer.setInstanceName(Long.toString(System.currentTimeMillis()));
         producer.setTransactionCheckListener(transactionCheckListener);
@@ -111,7 +112,7 @@ public class TransactionProducer {
                             // Thread.sleep(1000);
                             final long beginTimestamp = System.currentTimeMillis();
                             SendResult sendResult =
-                                producer.sendMessageInTransaction(msg, tranExecuter, null);
+                                    producer.sendMessageInTransaction(msg, tranExecuter, null);
                             if (sendResult != null) {
                                 statsBenchmark.getSendRequestSuccessCount().incrementAndGet();
                                 statsBenchmark.getReceiveResponseSuccessCount().incrementAndGet();
@@ -122,8 +123,8 @@ public class TransactionProducer {
                             long prevMaxRT = statsBenchmark.getSendMessageMaxRT().get();
                             while (currentRT > prevMaxRT) {
                                 boolean updated =
-                                    statsBenchmark.getSendMessageMaxRT().compareAndSet(prevMaxRT,
-                                        currentRT);
+                                        statsBenchmark.getSendMessageMaxRT().compareAndSet(prevMaxRT,
+                                                currentRT);
                                 if (updated)
                                     break;
 
@@ -175,7 +176,7 @@ class TransactionCheckListenerBImpl implements TransactionCheckListener {
     private StatsBenchmarkTProducer statsBenchmarkTProducer;
 
     public TransactionCheckListenerBImpl(boolean ischeckffalse,
-        StatsBenchmarkTProducer statsBenchmarkTProducer) {
+                                         StatsBenchmarkTProducer statsBenchmarkTProducer) {
         this.ischeckffalse = ischeckffalse;
         this.statsBenchmarkTProducer = statsBenchmarkTProducer;
     }
@@ -208,14 +209,14 @@ class StatsBenchmarkTProducer {
     private final AtomicLong checkRequestSuccessCount = new AtomicLong(0L);
 
     public Long[] createSnapshot() {
-        Long[] snap = new Long[] {
-            System.currentTimeMillis(),
-            this.sendRequestSuccessCount.get(),
-            this.sendRequestFailedCount.get(),
-            this.receiveResponseSuccessCount.get(),
-            this.receiveResponseFailedCount.get(),
-            this.sendMessageSuccessTimeTotal.get(),
-            this.checkRequestSuccessCount.get()};
+        Long[] snap = new Long[]{
+                System.currentTimeMillis(),
+                this.sendRequestSuccessCount.get(),
+                this.sendRequestFailedCount.get(),
+                this.receiveResponseSuccessCount.get(),
+                this.receiveResponseFailedCount.get(),
+                this.sendMessageSuccessTimeTotal.get(),
+                this.checkRequestSuccessCount.get()};
 
         return snap;
     }

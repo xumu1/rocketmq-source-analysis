@@ -31,9 +31,9 @@ public class TokenMgrError extends Error {
      */
     private static final long serialVersionUID = 1L;
 
-  /*
-   * Ordinals for various reasons why an Error of this type can be thrown.
-   */
+    /*
+     * Ordinals for various reasons why an Error of this type can be thrown.
+     */
 
     /**
      * Lexical error occurred.
@@ -122,14 +122,14 @@ public class TokenMgrError extends Error {
      * Note: You can customize the lexical error message by modifying this method.
      */
     protected static String LexicalError(boolean eofSeen, int lexState, int errorLine, int errorColumn,
-        String errorAfter, char curChar) {
+                                         String errorAfter, char curChar) {
         return "Lexical error at line " +
-            errorLine + ", column " +
-            errorColumn + ".  Encountered: " +
-            (eofSeen ?
-                "<EOF> " :
-                ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int) curChar + "), ") +
-            "after : \"" + addEscapes(errorAfter) + "\"";
+                errorLine + ", column " +
+                errorColumn + ".  Encountered: " +
+                (eofSeen ?
+                        "<EOF> " :
+                        ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int) curChar + "), ") +
+                "after : \"" + addEscapes(errorAfter) + "\"";
     }
 
     /**
@@ -145,9 +145,9 @@ public class TokenMgrError extends Error {
         return super.getMessage();
     }
 
-  /*
-   * Constructors of various flavors follow.
-   */
+    /*
+     * Constructors of various flavors follow.
+     */
 
     /**
      * No arg constructor.
@@ -167,7 +167,7 @@ public class TokenMgrError extends Error {
      * Full Constructor.
      */
     public TokenMgrError(boolean eofSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar,
-        int reason) {
+                         int reason) {
         this(LexicalError(eofSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
     }
 }

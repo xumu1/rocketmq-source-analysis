@@ -31,13 +31,14 @@ import java.io.Writer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.rocketmq.remoting.common.RemotingHelper;
 
 public class IOTinyUtils {
 
     static public String toString(InputStream input, String encoding) throws IOException {
         return (null == encoding) ? toString(new InputStreamReader(input, RemotingHelper.DEFAULT_CHARSET)) : toString(new InputStreamReader(
-            input, encoding));
+                input, encoding));
     }
 
     static public String toString(Reader reader) throws IOException {

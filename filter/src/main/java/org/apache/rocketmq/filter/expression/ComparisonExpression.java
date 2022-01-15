@@ -57,7 +57,7 @@ public abstract class ComparisonExpression extends BinaryExpression implements B
                 int ret = __compare((Comparable) rv, (Comparable) lv, true);
                 if (ret < 0)
                     throw new RuntimeException(
-                        String.format("Illegal values of between, left value(%s) must less than or equal to right value(%s)", lv, rv)
+                            String.format("Illegal values of between, left value(%s) must less than or equal to right value(%s)", lv, rv)
                     );
             }
         }
@@ -255,7 +255,7 @@ public abstract class ComparisonExpression extends BinaryExpression implements B
             return null;
         }
         if (getExpressionSymbol().equals(">=") || getExpressionSymbol().equals(">")
-            || getExpressionSymbol().equals("<") || getExpressionSymbol().equals("<=")) {
+                || getExpressionSymbol().equals("<") || getExpressionSymbol().equals("<=")) {
             Class<? extends Comparable> lc = lv.getClass();
             Class<? extends Comparable> rc = rv.getClass();
             if (lc == rc && lc == String.class) {

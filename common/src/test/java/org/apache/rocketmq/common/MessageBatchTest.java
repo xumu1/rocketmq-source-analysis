@@ -19,6 +19,7 @@ package org.apache.rocketmq.common;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageBatch;
 import org.junit.Test;

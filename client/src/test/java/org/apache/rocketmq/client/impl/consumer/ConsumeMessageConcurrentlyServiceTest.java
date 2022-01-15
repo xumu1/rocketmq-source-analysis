@@ -125,7 +125,7 @@ public class ConsumeMessageConcurrentlyServiceTest {
                         messageClientExt.setTopic(topic);
                         messageClientExt.setQueueId(0);
                         messageClientExt.setMsgId("123");
-                        messageClientExt.setBody(new byte[] {'a'});
+                        messageClientExt.setBody(new byte[]{'a'});
                         messageClientExt.setOffsetMsgId("234");
                         messageClientExt.setBornHost(new InetSocketAddress(8080));
                         messageClientExt.setStoreHost(new InetSocketAddress(8080));
@@ -143,11 +143,11 @@ public class ConsumeMessageConcurrentlyServiceTest {
 
     @Ignore
     @Test
-    public void testPullMessage_ConsumeSuccess() throws InterruptedException, RemotingException, MQBrokerException, NoSuchFieldException,Exception {
+    public void testPullMessage_ConsumeSuccess() throws InterruptedException, RemotingException, MQBrokerException, NoSuchFieldException, Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         final MessageExt[] messageExts = new MessageExt[1];
 
-        ConsumeMessageConcurrentlyService  normalServie = new ConsumeMessageConcurrentlyService(pushConsumer.getDefaultMQPushConsumerImpl(), new MessageListenerConcurrently() {
+        ConsumeMessageConcurrentlyService normalServie = new ConsumeMessageConcurrentlyService(pushConsumer.getDefaultMQPushConsumerImpl(), new MessageListenerConcurrently() {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,
                                                             ConsumeConcurrentlyContext context) {
@@ -164,19 +164,19 @@ public class ConsumeMessageConcurrentlyServiceTest {
 
         Thread.sleep(1000);
 
-        org.apache.rocketmq.common.protocol.body.ConsumeStatus stats = normalServie.getConsumerStatsManager().consumeStatus(pushConsumer.getDefaultMQPushConsumerImpl().groupName(),topic);
+        org.apache.rocketmq.common.protocol.body.ConsumeStatus stats = normalServie.getConsumerStatsManager().consumeStatus(pushConsumer.getDefaultMQPushConsumerImpl().groupName(), topic);
 
-        ConsumerStatsManager mgr  =   normalServie.getConsumerStatsManager();
+        ConsumerStatsManager mgr = normalServie.getConsumerStatsManager();
 
         Field statItmeSetField = mgr.getClass().getDeclaredField("topicAndGroupConsumeOKTPS");
         statItmeSetField.setAccessible(true);
 
-        StatsItemSet itemSet = (StatsItemSet)statItmeSetField.get(mgr);
+        StatsItemSet itemSet = (StatsItemSet) statItmeSetField.get(mgr);
         StatsItem item = itemSet.getAndCreateStatsItem(topic + "@" + pushConsumer.getDefaultMQPushConsumerImpl().groupName());
 
         assertThat(item.getValue().get()).isGreaterThan(0L);
         assertThat(messageExts[0].getTopic()).isEqualTo(topic);
-        assertThat(messageExts[0].getBody()).isEqualTo(new byte[] {'a'});
+        assertThat(messageExts[0].getBody()).isEqualTo(new byte[]{'a'});
     }
 
     @After

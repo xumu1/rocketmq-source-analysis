@@ -99,7 +99,7 @@ public class MessageQueueForC implements Comparable<MessageQueueForC>, Serializa
     @Override
     public String toString() {
         return "MessageQueueForC [topic=" + topic + ", brokerName=" + brokerName + ", queueId=" + queueId
-            + ", offset=" + offset + "]";
+                + ", offset=" + offset + "]";
     }
 
     public String getTopic() {

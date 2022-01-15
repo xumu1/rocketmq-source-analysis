@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.rocketmq.common.protocol.route.BrokerData;
 import org.apache.rocketmq.remoting.protocol.RemotingSerializable;
 
@@ -56,10 +57,10 @@ public class ClusterInfo extends RemotingSerializable {
             }
         }
 
-        return addrs.toArray(new String[] {});
+        return addrs.toArray(new String[]{});
     }
 
     public String[] retrieveAllClusterNames() {
-        return clusterAddrTable.keySet().toArray(new String[] {});
+        return clusterAddrTable.keySet().toArray(new String[]{});
     }
 }

@@ -35,8 +35,8 @@ public class LoggingBuilderTest extends BasicLoggerTest {
         System.setOut(new PrintStream(byteArrayOutputStream));
 
         Appender consoleAppender = LoggingBuilder.newAppenderBuilder()
-            .withConsoleAppender(LoggingBuilder.SYSTEM_OUT)
-            .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
+                .withConsoleAppender(LoggingBuilder.SYSTEM_OUT)
+                .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
         consoleAppender.doAppend(loggingEvent);
         String result = new String(byteArrayOutputStream.toByteArray());
         System.setOut(out);
@@ -49,7 +49,7 @@ public class LoggingBuilderTest extends BasicLoggerTest {
     public void testFileAppender() throws InterruptedException {
         String logFile = loggingDir + "/file.log";
         Appender rollingFileAppender = LoggingBuilder.newAppenderBuilder().withAsync(false, 102400)
-            .withFileAppender(logFile).withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
+                .withFileAppender(logFile).withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
 
         for (int i = 0; i < 10; i++) {
             rollingFileAppender.doAppend(loggingEvent);
@@ -65,8 +65,8 @@ public class LoggingBuilderTest extends BasicLoggerTest {
 
         String rollingFile = loggingDir + "/rolling.log";
         Appender rollingFileAppender = LoggingBuilder.newAppenderBuilder().withAsync(false, 1024)
-            .withRollingFileAppender(rollingFile, "1024", 5)
-            .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
+                .withRollingFileAppender(rollingFile, "1024", 5)
+                .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
 
         for (int i = 0; i < 100; i++) {
             rollingFileAppender.doAppend(loggingEvent);
@@ -92,8 +92,8 @@ public class LoggingBuilderTest extends BasicLoggerTest {
     public void testDailyRollingFileAppender() throws InterruptedException {
         String rollingFile = loggingDir + "/daily-rolling--222.log";
         Appender rollingFileAppender = LoggingBuilder.newAppenderBuilder().withAsync(false, 1024)
-            .withDailyFileRollingAppender(rollingFile, "'.'yyyy-MM-dd_HH-mm-ss-SSS")
-            .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
+                .withDailyFileRollingAppender(rollingFile, "'.'yyyy-MM-dd_HH-mm-ss-SSS")
+                .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
 
         for (int i = 0; i < 100; i++) {
             rollingFileAppender.doAppend(loggingEvent);

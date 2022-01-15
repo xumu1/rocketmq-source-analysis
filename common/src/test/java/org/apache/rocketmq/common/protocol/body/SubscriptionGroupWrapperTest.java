@@ -21,13 +21,15 @@ import org.apache.rocketmq.common.DataVersion;
 import org.apache.rocketmq.common.subscription.SubscriptionGroupConfig;
 import org.apache.rocketmq.remoting.protocol.RemotingSerializable;
 import org.junit.Test;
+
 import java.util.concurrent.ConcurrentHashMap;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubscriptionGroupWrapperTest {
 
     @Test
-    public void testFromJson(){
+    public void testFromJson() {
         SubscriptionGroupWrapper subscriptionGroupWrapper = new SubscriptionGroupWrapper();
         ConcurrentHashMap<String, SubscriptionGroupConfig> subscriptions = new ConcurrentHashMap<String, SubscriptionGroupConfig>();
         SubscriptionGroupConfig subscriptionGroupConfig = new SubscriptionGroupConfig();

@@ -36,7 +36,7 @@ public class ShutdownHookThread extends Thread {
     /**
      * Create the standard hook thread, with a call back, by using {@link Callable} interface.
      *
-     * @param log The log instance is used in hook thread.
+     * @param log      The log instance is used in hook thread.
      * @param callback The call back function.
      */
     public ShutdownHookThread(InternalLogger log, Callable callback) {

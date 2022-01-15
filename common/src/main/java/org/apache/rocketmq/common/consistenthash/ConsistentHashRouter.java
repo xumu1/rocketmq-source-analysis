@@ -38,8 +38,8 @@ public class ConsistentHashRouter<T extends Node> {
     }
 
     /**
-     * @param pNodes collections of physical nodes
-     * @param vNodeCount amounts of virtual nodes
+     * @param pNodes       collections of physical nodes
+     * @param vNodeCount   amounts of virtual nodes
      * @param hashFunction hash Function to hash Node instances
      */
     public ConsistentHashRouter(Collection<T> pNodes, int vNodeCount, HashFunction hashFunction) {
@@ -57,7 +57,7 @@ public class ConsistentHashRouter<T extends Node> {
     /**
      * add physic node to the hash ring with some virtual nodes
      *
-     * @param pNode physical node needs added to hash ring
+     * @param pNode      physical node needs added to hash ring
      * @param vNodeCount the number of virtual node of the physical node. Value should be greater than or equals to 0
      */
     // 添加 ring 上的节点，vNodeCount 是虚拟节点的数目，就是要将一个 pNode 对应到多少虚拟节点

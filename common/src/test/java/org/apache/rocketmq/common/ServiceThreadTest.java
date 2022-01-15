@@ -85,7 +85,8 @@ public class ServiceThreadTest {
                 doNothing();
             }
 
-            private void doNothing() {}
+            private void doNothing() {
+            }
 
             @Override
             public String getServiceName() {

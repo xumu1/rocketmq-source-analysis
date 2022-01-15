@@ -18,8 +18,10 @@
 package org.apache.rocketmq.remoting;
 
 import io.netty.channel.ChannelHandlerContext;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
+
 import org.apache.rocketmq.remoting.annotation.CFNullable;
 import org.apache.rocketmq.remoting.exception.RemotingCommandException;
 import org.apache.rocketmq.remoting.exception.RemotingConnectException;
@@ -90,7 +92,7 @@ public class RemotingServerTest {
 
     @Test
     public void testInvokeSync() throws InterruptedException, RemotingConnectException,
-        RemotingSendRequestException, RemotingTimeoutException {
+            RemotingSendRequestException, RemotingTimeoutException {
         RequestHeader requestHeader = new RequestHeader();
         requestHeader.setCount(1);
         requestHeader.setMessageTitle("Welcome");
@@ -104,7 +106,7 @@ public class RemotingServerTest {
 
     @Test
     public void testInvokeOneway() throws InterruptedException, RemotingConnectException,
-        RemotingTimeoutException, RemotingTooMuchRequestException, RemotingSendRequestException {
+            RemotingTimeoutException, RemotingTooMuchRequestException, RemotingSendRequestException {
 
         RemotingCommand request = RemotingCommand.createRequestCommand(0, null);
         request.setRemark("messi");
@@ -113,7 +115,7 @@ public class RemotingServerTest {
 
     @Test
     public void testInvokeAsync() throws InterruptedException, RemotingConnectException,
-        RemotingTimeoutException, RemotingTooMuchRequestException, RemotingSendRequestException {
+            RemotingTimeoutException, RemotingTooMuchRequestException, RemotingSendRequestException {
 
         final CountDownLatch latch = new CountDownLatch(1);
         RemotingCommand request = RemotingCommand.createRequestCommand(0, null);

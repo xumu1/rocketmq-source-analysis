@@ -28,12 +28,12 @@ public class MQProtosHelper {
     private static final InternalLogger log = InternalLoggerFactory.getLogger(LoggerName.COMMON_LOGGER_NAME);
 
     public static boolean registerBrokerToNameServer(final String nsaddr, final String brokerAddr,
-        final long timeoutMillis) {
+                                                     final long timeoutMillis) {
         RegisterBrokerRequestHeader requestHeader = new RegisterBrokerRequestHeader();
         requestHeader.setBrokerAddr(brokerAddr);
 
         RemotingCommand request =
-            RemotingCommand.createRequestCommand(RequestCode.REGISTER_BROKER, requestHeader);
+                RemotingCommand.createRequestCommand(RequestCode.REGISTER_BROKER, requestHeader);
 
         try {
             RemotingCommand response = RemotingHelper.invokeSync(nsaddr, request, timeoutMillis);

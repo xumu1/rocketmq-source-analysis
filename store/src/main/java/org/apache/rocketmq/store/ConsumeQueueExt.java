@@ -36,6 +36,7 @@ import java.util.List;
  * <li>3. Be careful, address returned is always less than 0.</li>
  * <li>4. Pls keep this file small.</li>
  */
+
 /**
  * ConsumeQueue 的扩展，用来存储一些不重要的信息
  * 例如消息的存储时间，过滤的位图等
@@ -62,17 +63,17 @@ public class ConsumeQueueExt {
     /**
      * Constructor.
      *
-     * @param topic topic
-     * @param queueId id of queue
-     * @param storePath root dir of files to store.
+     * @param topic          topic
+     * @param queueId        id of queue
+     * @param storePath      root dir of files to store.
      * @param mappedFileSize file size
-     * @param bitMapLength bit map length.
+     * @param bitMapLength   bit map length.
      */
     public ConsumeQueueExt(final String topic,
-        final int queueId,
-        final String storePath,
-        final int mappedFileSize,
-        final int bitMapLength) {
+                           final int queueId,
+                           final String storePath,
+                           final int mappedFileSize,
+                           final int bitMapLength) {
 
         this.storePath = storePath;
         this.mappedFileSize = mappedFileSize;
@@ -81,14 +82,14 @@ public class ConsumeQueueExt {
         this.queueId = queueId;
 
         String queueDir = this.storePath
-            + File.separator + topic
-            + File.separator + queueId;
+                + File.separator + topic
+                + File.separator + queueId;
 
         this.mappedFileQueue = new MappedFileQueue(queueDir, mappedFileSize, null);
 
         if (bitMapLength > 0) {
             this.tempContainer = ByteBuffer.allocate(
-                bitMapLength / Byte.SIZE
+                    bitMapLength / Byte.SIZE
             );
         }
     }
@@ -225,7 +226,7 @@ public class ConsumeQueueExt {
                 if (size > blankSize) {
                     fullFillToEnd(mappedFile, wrotePosition);
                     log.info("No enough space(need:{}, has:{}) of file {}, so fill to end",
-                        size, blankSize, mappedFile.getFileName());
+                            size, blankSize, mappedFile.getFileName());
                     continue;
                 }
 
@@ -303,7 +304,7 @@ public class ConsumeQueueExt {
             }
 
             log.info("All files of consume queue extend has been recovered over, last mapped file "
-                + mappedFile.getFileName());
+                    + mappedFile.getFileName());
             break;
         }
 
@@ -335,7 +336,7 @@ public class ConsumeQueueExt {
 
             if (fileTailOffset < realOffset) {
                 log.info("Destroy consume queue ext by min: file={}, fileTailOffset={}, minOffset={}", file.getFileName(),
-                    fileTailOffset, realOffset);
+                        fileTailOffset, realOffset);
                 if (file.destroy(1000)) {
                     willRemoveFiles.add(file);
                 }
@@ -413,9 +414,9 @@ public class ConsumeQueueExt {
      */
     public static class CqExtUnit {
         public static final short MIN_EXT_UNIT_SIZE
-            = 2 * 1 // size, 32k max
-            + 8 * 2 // msg time + tagCode
-            + 2; // bitMapSize
+                = 2 * 1 // size, 32k max
+                + 8 * 2 // msg time + tagCode
+                + 2; // bitMapSize
 
         public static final int MAX_EXT_UNIT_SIZE = Short.MAX_VALUE;
 
@@ -609,12 +610,12 @@ public class ConsumeQueueExt {
         @Override
         public String toString() {
             return "CqExtUnit{" +
-                "size=" + size +
-                ", tagsCode=" + tagsCode +
-                ", msgStoreTime=" + msgStoreTime +
-                ", bitMapSize=" + bitMapSize +
-                ", filterBitMap=" + Arrays.toString(filterBitMap) +
-                '}';
+                    "size=" + size +
+                    ", tagsCode=" + tagsCode +
+                    ", msgStoreTime=" + msgStoreTime +
+                    ", bitMapSize=" + bitMapSize +
+                    ", filterBitMap=" + Arrays.toString(filterBitMap) +
+                    '}';
         }
     }
 }

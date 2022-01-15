@@ -18,6 +18,7 @@
 package org.apache.rocketmq.common.protocol.body;
 
 import java.util.Map;
+
 import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.remoting.protocol.RemotingSerializable;
 

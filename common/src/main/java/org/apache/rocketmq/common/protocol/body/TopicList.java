@@ -18,6 +18,7 @@ package org.apache.rocketmq.common.protocol.body;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.apache.rocketmq.remoting.protocol.RemotingSerializable;
 
 public class TopicList extends RemotingSerializable {

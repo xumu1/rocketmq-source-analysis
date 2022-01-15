@@ -16,7 +16,8 @@
 -- specific language governing permissions and limitations
 -- under the License.
 --
-CREATE TABLE t_transaction(
-	offset				NUMERIC(20) PRIMARY KEY,
-	producerGroup		VARCHAR(64)
+CREATE TABLE t_transaction
+(
+    offset        NUMERIC(20) PRIMARY KEY,
+    producerGroup VARCHAR(64)
 )

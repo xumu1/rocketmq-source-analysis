@@ -71,7 +71,7 @@ public abstract class UnaryExpression implements Expression {
     }
 
     public static BooleanExpression createInExpression(PropertyExpression right, List<Object> elements,
-        final boolean not) {
+                                                       final boolean not) {
 
         // Use a HashSet if there are many elements.
         Collection<Object> t;

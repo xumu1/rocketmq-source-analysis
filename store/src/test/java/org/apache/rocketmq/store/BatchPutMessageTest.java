@@ -111,7 +111,7 @@ public class BatchPutMessageTest {
 
         PutMessageResult putMessageResult = messageStore.putMessages(messageExtBatch);
         assertThat(putMessageResult.isOk()).isTrue();
-        
+
         Thread.sleep(3 * 1000);
 
         for (long i = 0; i < 10; i++) {

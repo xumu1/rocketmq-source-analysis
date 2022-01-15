@@ -19,6 +19,7 @@ package org.apache.rocketmq.logging;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+
 import org.apache.rocketmq.logging.inner.Appender;
 import org.apache.rocketmq.logging.inner.Level;
 import org.apache.rocketmq.logging.inner.Logger;
@@ -38,8 +39,8 @@ public class InternalLoggerTest {
         System.setOut(new PrintStream(byteArrayOutputStream));
 
         Appender consoleAppender = LoggingBuilder.newAppenderBuilder()
-            .withConsoleAppender(LoggingBuilder.SYSTEM_OUT)
-            .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
+                .withConsoleAppender(LoggingBuilder.SYSTEM_OUT)
+                .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
 
         Logger consoleLogger = Logger.getLogger("ConsoleLogger");
         consoleLogger.setAdditivity(false);

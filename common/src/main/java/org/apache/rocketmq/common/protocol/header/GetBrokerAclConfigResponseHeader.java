@@ -34,7 +34,8 @@ public class GetBrokerAclConfigResponseHeader implements CommandCustomHeader {
     @CFNotNull
     private String clusterName;
 
-    @Override public void checkFields() throws RemotingCommandException {
+    @Override
+    public void checkFields() throws RemotingCommandException {
     }
 
     public String getVersion() {

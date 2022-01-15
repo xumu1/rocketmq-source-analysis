@@ -17,6 +17,7 @@
 package org.apache.rocketmq.broker.mqtrace;
 
 import java.util.Properties;
+
 import org.apache.rocketmq.common.message.MessageType;
 import org.apache.rocketmq.store.stats.BrokerStatsManager;
 

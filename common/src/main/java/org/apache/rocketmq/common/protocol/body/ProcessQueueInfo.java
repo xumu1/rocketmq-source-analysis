@@ -154,13 +154,13 @@ public class ProcessQueueInfo {
     @Override
     public String toString() {
         return "ProcessQueueInfo [commitOffset=" + commitOffset + ", cachedMsgMinOffset="
-            + cachedMsgMinOffset + ", cachedMsgMaxOffset=" + cachedMsgMaxOffset
-            + ", cachedMsgCount=" + cachedMsgCount + ", cachedMsgSizeInMiB=" + cachedMsgSizeInMiB
-            + ", transactionMsgMinOffset=" + transactionMsgMinOffset
-            + ", transactionMsgMaxOffset=" + transactionMsgMaxOffset + ", transactionMsgCount="
-            + transactionMsgCount + ", locked=" + locked + ", tryUnlockTimes=" + tryUnlockTimes
-            + ", lastLockTimestamp=" + UtilAll.timeMillisToHumanString(lastLockTimestamp) + ", droped="
-            + droped + ", lastPullTimestamp=" + UtilAll.timeMillisToHumanString(lastPullTimestamp)
-            + ", lastConsumeTimestamp=" + UtilAll.timeMillisToHumanString(lastConsumeTimestamp) + "]";
+                + cachedMsgMinOffset + ", cachedMsgMaxOffset=" + cachedMsgMaxOffset
+                + ", cachedMsgCount=" + cachedMsgCount + ", cachedMsgSizeInMiB=" + cachedMsgSizeInMiB
+                + ", transactionMsgMinOffset=" + transactionMsgMinOffset
+                + ", transactionMsgMaxOffset=" + transactionMsgMaxOffset + ", transactionMsgCount="
+                + transactionMsgCount + ", locked=" + locked + ", tryUnlockTimes=" + tryUnlockTimes
+                + ", lastLockTimestamp=" + UtilAll.timeMillisToHumanString(lastLockTimestamp) + ", droped="
+                + droped + ", lastPullTimestamp=" + UtilAll.timeMillisToHumanString(lastPullTimestamp)
+                + ", lastConsumeTimestamp=" + UtilAll.timeMillisToHumanString(lastConsumeTimestamp) + "]";
     }
 }

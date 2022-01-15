@@ -30,8 +30,8 @@ public class BrokerHousekeepingServiceTest {
     @BeforeClass
     public static void setup() {
         NamesrvController namesrvController = new NamesrvController(
-            new NamesrvConfig(),
-            new NettyServerConfig()
+                new NamesrvConfig(),
+                new NettyServerConfig()
         );
         brokerHousekeepingService = new BrokerHousekeepingService(namesrvController);
     }

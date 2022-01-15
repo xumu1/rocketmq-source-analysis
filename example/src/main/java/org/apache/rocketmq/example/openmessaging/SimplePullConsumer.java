@@ -27,14 +27,14 @@ import io.openmessaging.producer.SendResult;
 public class SimplePullConsumer {
     public static void main(String[] args) {
         final MessagingAccessPoint messagingAccessPoint =
-            OMS.getMessagingAccessPoint("oms:rocketmq://localhost:9876/default:default");
+                OMS.getMessagingAccessPoint("oms:rocketmq://localhost:9876/default:default");
 
         messagingAccessPoint.startup();
 
         final Producer producer = messagingAccessPoint.createProducer();
 
         final PullConsumer consumer = messagingAccessPoint.createPullConsumer(
-            OMS.newKeyValue().put(OMSBuiltinKeys.CONSUMER_ID, "OMS_CONSUMER"));
+                OMS.newKeyValue().put(OMSBuiltinKeys.CONSUMER_ID, "OMS_CONSUMER"));
 
         messagingAccessPoint.startup();
         System.out.printf("MessagingAccessPoint startup OK%n");

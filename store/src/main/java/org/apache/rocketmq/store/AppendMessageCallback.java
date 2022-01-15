@@ -17,6 +17,7 @@
 package org.apache.rocketmq.store;
 
 import java.nio.ByteBuffer;
+
 import org.apache.rocketmq.common.message.MessageExtBatch;
 
 /**
@@ -32,7 +33,7 @@ public interface AppendMessageCallback {
      */
     // 当消息序列化之后，写入 ByteBuffer
     AppendMessageResult doAppend(final long fileFromOffset, final ByteBuffer byteBuffer,
-        final int maxBlank, final MessageExtBrokerInner msg);
+                                 final int maxBlank, final MessageExtBrokerInner msg);
 
     /**
      * After batched message serialization, write MapedByteBuffer
@@ -42,5 +43,5 @@ public interface AppendMessageCallback {
      */
     // 当一批消息序列化之后，写入 ByteBuffer
     AppendMessageResult doAppend(final long fileFromOffset, final ByteBuffer byteBuffer,
-        final int maxBlank, final MessageExtBatch messageExtBatch);
+                                 final int maxBlank, final MessageExtBatch messageExtBatch);
 }

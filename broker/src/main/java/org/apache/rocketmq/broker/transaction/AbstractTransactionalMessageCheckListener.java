@@ -17,7 +17,9 @@
 package org.apache.rocketmq.broker.transaction;
 
 import io.netty.channel.Channel;
+
 import java.util.Random;
+
 import org.apache.rocketmq.broker.BrokerController;
 import org.apache.rocketmq.common.constant.LoggerName;
 import org.apache.rocketmq.common.message.MessageConst;

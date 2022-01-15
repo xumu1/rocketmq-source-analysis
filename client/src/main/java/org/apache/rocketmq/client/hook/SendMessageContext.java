@@ -17,6 +17,7 @@
 package org.apache.rocketmq.client.hook;
 
 import java.util.Map;
+
 import org.apache.rocketmq.client.impl.CommunicationMode;
 import org.apache.rocketmq.client.impl.producer.DefaultMQProducerImpl;
 import org.apache.rocketmq.client.producer.SendResult;

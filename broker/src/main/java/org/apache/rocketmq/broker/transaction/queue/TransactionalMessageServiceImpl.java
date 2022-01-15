@@ -85,10 +85,10 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
     private boolean needSkip(MessageExt msgExt) {
         long valueOfCurrentMinusBorn = System.currentTimeMillis() - msgExt.getBornTimestamp();
         if (valueOfCurrentMinusBorn
-            > transactionalMessageBridge.getBrokerController().getMessageStoreConfig().getFileReservedTime()
-            * 3600L * 1000) {
+                > transactionalMessageBridge.getBrokerController().getMessageStoreConfig().getFileReservedTime()
+                * 3600L * 1000) {
             log.info("Half message exceed file reserved time ,so skip it.messageId {},bornTime {}",
-                msgExt.getMsgId(), msgExt.getBornTimestamp());
+                    msgExt.getMsgId(), msgExt.getBornTimestamp());
             return true;
         }
         return false;
@@ -98,32 +98,32 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
     private boolean putBackHalfMsgQueue(MessageExt msgExt, long offset) {
         PutMessageResult putMessageResult = putBackToHalfQueueReturnResult(msgExt);
         if (putMessageResult != null
-            && putMessageResult.getPutMessageStatus() == PutMessageStatus.PUT_OK) {
+                && putMessageResult.getPutMessageStatus() == PutMessageStatus.PUT_OK) {
             msgExt.setQueueOffset(
-                putMessageResult.getAppendMessageResult().getLogicsOffset());
+                    putMessageResult.getAppendMessageResult().getLogicsOffset());
             msgExt.setCommitLogOffset(
-                putMessageResult.getAppendMessageResult().getWroteOffset());
+                    putMessageResult.getAppendMessageResult().getWroteOffset());
             msgExt.setMsgId(putMessageResult.getAppendMessageResult().getMsgId());
             log.debug(
-                "Send check message, the offset={} restored in queueOffset={} "
-                    + "commitLogOffset={} "
-                    + "newMsgId={} realMsgId={} topic={}",
-                offset, msgExt.getQueueOffset(), msgExt.getCommitLogOffset(), msgExt.getMsgId(),
-                msgExt.getUserProperty(MessageConst.PROPERTY_UNIQ_CLIENT_MESSAGE_ID_KEYIDX),
-                msgExt.getTopic());
+                    "Send check message, the offset={} restored in queueOffset={} "
+                            + "commitLogOffset={} "
+                            + "newMsgId={} realMsgId={} topic={}",
+                    offset, msgExt.getQueueOffset(), msgExt.getCommitLogOffset(), msgExt.getMsgId(),
+                    msgExt.getUserProperty(MessageConst.PROPERTY_UNIQ_CLIENT_MESSAGE_ID_KEYIDX),
+                    msgExt.getTopic());
             return true;
         } else {
             log.error(
-                "PutBackToHalfQueueReturnResult write failed, topic: {}, queueId: {}, "
-                    + "msgId: {}",
-                msgExt.getTopic(), msgExt.getQueueId(), msgExt.getMsgId());
+                    "PutBackToHalfQueueReturnResult write failed, topic: {}, queueId: {}, "
+                            + "msgId: {}",
+                    msgExt.getTopic(), msgExt.getQueueId(), msgExt.getMsgId());
             return false;
         }
     }
 
     @Override
     public void check(long transactionTimeout, int transactionCheckMax,
-        AbstractTransactionalMessageCheckListener listener) {
+                      AbstractTransactionalMessageCheckListener listener) {
         try {
             String topic = MixAll.RMQ_SYS_TRANS_HALF_TOPIC;
             // topic 相同，queueId 不同的 MessageQueue
@@ -142,7 +142,7 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
                 log.info("Before check, the queue={} msgOffset={} opOffset={}", messageQueue, halfOffset, opOffset);
                 if (halfOffset < 0 || opOffset < 0) {
                     log.error("MessageQueue: {} illegal offset read: {}, op offset: {},skip this queue", messageQueue,
-                        halfOffset, opOffset);
+                            halfOffset, opOffset);
                     continue;
                 }
 
@@ -151,7 +151,7 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
                 PullResult pullResult = fillOpRemoveMap(removeMap, opQueue, opOffset, halfOffset, doneOpOffset);
                 if (null == pullResult) {
                     log.error("The queue={} check msgOffset={} with opOffset={} failed, pullResult is null",
-                        messageQueue, halfOffset, opOffset);
+                            messageQueue, halfOffset, opOffset);
                     continue;
                 }
                 // single thread
@@ -176,11 +176,11 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
                             }
                             if (getResult.getPullResult().getPullStatus() == PullStatus.NO_NEW_MSG) {
                                 log.debug("No new msg, the miss offset={} in={}, continue check={}, pull result={}", i,
-                                    messageQueue, getMessageNullCount, getResult.getPullResult());
+                                        messageQueue, getMessageNullCount, getResult.getPullResult());
                                 break;
                             } else {
                                 log.info("Illegal offset, the miss offset={} in={}, continue check={}, pull result={}",
-                                    i, messageQueue, getMessageNullCount, getResult.getPullResult());
+                                        i, messageQueue, getMessageNullCount, getResult.getPullResult());
                                 i = getResult.getPullResult().getNextBeginOffset();
                                 newOffset = i;
                                 continue;
@@ -198,7 +198,7 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
                         // msgExt 写入时间大于 startTime，则说明是本轮启动 check 后存入的消息，则中断对应队列的 check,换下一个 squeue
                         if (msgExt.getStoreTimestamp() >= startTime) {
                             log.debug("Fresh stored. the miss offset={}, check it later, store={}", i,
-                                new Date(msgExt.getStoreTimestamp()));
+                                    new Date(msgExt.getStoreTimestamp()));
                             break;
                         }
 
@@ -219,14 +219,14 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
                             // 还不到时候，先 break，处理其他的 queue，之后再说
                             if ((0 <= valueOfCurrentMinusBorn) && (valueOfCurrentMinusBorn < checkImmunityTime)) {
                                 log.debug("New arrived, the miss offset={}, check it later checkImmunity={}, born={}", i,
-                                    checkImmunityTime, new Date(msgExt.getBornTimestamp()));
+                                        checkImmunityTime, new Date(msgExt.getBornTimestamp()));
                                 break;
                             }
                         }
                         List<MessageExt> opMsg = pullResult.getMsgFoundList();
                         boolean isNeedCheck = (opMsg == null && valueOfCurrentMinusBorn > checkImmunityTime)
-                            || (opMsg != null && (opMsg.get(opMsg.size() - 1).getBornTimestamp() - startTime > transactionTimeout))
-                            || (valueOfCurrentMinusBorn <= -1);
+                                || (opMsg != null && (opMsg.get(opMsg.size() - 1).getBornTimestamp() - startTime > transactionTimeout))
+                                || (valueOfCurrentMinusBorn <= -1);
 
                         if (isNeedCheck) {
                             // 重新写入失败则重复本次循环，写入成功则向客端户发送check状态请求
@@ -238,7 +238,7 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
                             // 不需要 check，拉取下一次的 op queue 的消息
                             pullResult = fillOpRemoveMap(removeMap, opQueue, pullResult.getNextBeginOffset(), halfOffset, doneOpOffset);
                             log.info("The miss offset:{} in messageQueue:{} need to get more opMsg, result is:{}", i,
-                                messageQueue, pullResult);
+                                    messageQueue, pullResult);
                             continue;
                         }
                     }
@@ -277,30 +277,30 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
     /**
      * Read op message, parse op message, and fill removeMap
      *
-     * @param removeMap Half message to be remove, key:halfOffset, value: opOffset.
-     * @param opQueue Op message queue.
+     * @param removeMap      Half message to be remove, key:halfOffset, value: opOffset.
+     * @param opQueue        Op message queue.
      * @param pullOffsetOfOp The begin offset of op message queue.
-     * @param miniOffset The current minimum offset of half message queue.
-     * @param doneOpOffset Stored op messages that have been processed.
+     * @param miniOffset     The current minimum offset of half message queue.
+     * @param doneOpOffset   Stored op messages that have been processed.
      * @return Op message result.
      */
     // 读取 op 的 queue，removeMap 的 key 是消息在 half 中的逻辑偏移，value 是消息在 op 中的逻辑偏移
     private PullResult fillOpRemoveMap(HashMap<Long, Long> removeMap,
-        MessageQueue opQueue, long pullOffsetOfOp, long miniOffset, List<Long> doneOpOffset) {
+                                       MessageQueue opQueue, long pullOffsetOfOp, long miniOffset, List<Long> doneOpOffset) {
         PullResult pullResult = pullOpMsg(opQueue, pullOffsetOfOp, 32);
         if (null == pullResult) {
             return null;
         }
         if (pullResult.getPullStatus() == PullStatus.OFFSET_ILLEGAL
-            || pullResult.getPullStatus() == PullStatus.NO_MATCHED_MSG) {
+                || pullResult.getPullStatus() == PullStatus.NO_MATCHED_MSG) {
             log.warn("The miss op offset={} in queue={} is illegal, pullResult={}", pullOffsetOfOp, opQueue,
-                pullResult);
+                    pullResult);
             // 当位点不对的时候，更新
             transactionalMessageBridge.updateConsumeOffset(opQueue, pullResult.getNextBeginOffset());
             return pullResult;
         } else if (pullResult.getPullStatus() == PullStatus.NO_NEW_MSG) {
             log.warn("The miss op offset={} in queue={} is NO_NEW_MSG, pullResult={}", pullOffsetOfOp, opQueue,
-                pullResult);
+                    pullResult);
             return pullResult;
         }
         List<MessageExt> opMsg = pullResult.getMsgFoundList();
@@ -312,7 +312,7 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
             // body 里放了消息在 half topic 中的逻辑位点
             Long queueOffset = getLong(new String(opMessageExt.getBody(), TransactionalMessageUtil.charset));
             log.info("Topic: {} tags: {}, OpOffset: {}, HalfOffset: {}", opMessageExt.getTopic(),
-                opMessageExt.getTags(), opMessageExt.getQueueOffset(), queueOffset);
+                    opMessageExt.getTags(), opMessageExt.getQueueOffset(), queueOffset);
             if (TransactionalMessageUtil.REMOVETAG.equals(opMessageExt.getTags())) {
                 // 比最小偏移还小，无需处理
                 if (queueOffset < miniOffset) {
@@ -332,14 +332,14 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
     /**
      * If return true, skip this msg
      *
-     * @param removeMap Op message map to determine whether a half message was responded by producer.
+     * @param removeMap    Op message map to determine whether a half message was responded by producer.
      * @param doneOpOffset Op Message which has been checked.
-     * @param msgExt Half message
+     * @param msgExt       Half message
      * @return Return true if put success, otherwise return false.
      */
     // 检查 prepare 的 queueOffset，如果函数返回 true，跳过这条消息
     private boolean checkPrepareQueueOffset(HashMap<Long, Long> removeMap, List<Long> doneOpOffset,
-        MessageExt msgExt) {
+                                            MessageExt msgExt) {
         String prepareQueueOffsetStr = msgExt.getUserProperty(MessageConst.PROPERTY_TRANSACTION_PREPARED_QUEUE_OFFSET);
         // 没有这个属性，则设置这个属性为 msg 的 queueOffset，然后 put 到 queue 的尾部
         if (null == prepareQueueOffsetStr) {
@@ -386,9 +386,9 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
     /**
      * Read half message from Half Topic
      *
-     * @param mq Target message queue, in this method, it means the half message queue.
+     * @param mq     Target message queue, in this method, it means the half message queue.
      * @param offset Offset in the message queue.
-     * @param nums Pull message number.
+     * @param nums   Pull message number.
      * @return Messages pulled from half message queue.
      */
     // 获取 RMQ_SYS_TRANS_OP_HALF_TOPIC 中的消息
@@ -399,9 +399,9 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
     /**
      * Read op message from Op Topic
      *
-     * @param mq Target Message Queue
+     * @param mq     Target Message Queue
      * @param offset Offset in the message queue
-     * @param nums Pull message number
+     * @param nums   Pull message number
      * @return Messages pulled from operate message queue.
      */
     // 获取 RMQ_SYS_TRANS_HALF_TOPIC 中的消息
@@ -452,12 +452,13 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
         MessageQueue opQueue = opQueueMap.get(messageQueue);
         if (opQueue == null) {
             opQueue = new MessageQueue(TransactionalMessageUtil.buildOpTopic(), messageQueue.getBrokerName(),
-                messageQueue.getQueueId());
+                    messageQueue.getQueueId());
             opQueueMap.put(messageQueue, opQueue);
         }
         return opQueue;
 
     }
+
     // 获取 prepare 的消息
     private GetResult getHalfMsg(MessageQueue messageQueue, long offset) {
         GetResult getResult = new GetResult();
@@ -471,6 +472,7 @@ public class TransactionalMessageServiceImpl implements TransactionalMessageServ
         getResult.setMsg(messageExts.get(0));
         return getResult;
     }
+
     // 根据物理 offset 获取 prepare 的消息
     private OperationResult getHalfMessageByOffset(long commitLogOffset) {
         OperationResult response = new OperationResult();

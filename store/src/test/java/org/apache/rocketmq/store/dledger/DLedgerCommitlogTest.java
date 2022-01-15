@@ -19,10 +19,12 @@ package org.apache.rocketmq.store.dledger;
 import io.openmessaging.storage.dledger.DLedgerServer;
 import io.openmessaging.storage.dledger.store.file.DLedgerMmapFileStore;
 import io.openmessaging.storage.dledger.store.file.MmapFileList;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import org.apache.rocketmq.common.message.MessageDecoder;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.store.DefaultMessageStore;
@@ -39,7 +41,7 @@ public class DLedgerCommitlogTest extends MessageStoreTestBase {
 
     @Test
     public void testTruncateCQ() throws Exception {
-        String base =  createBaseDir();
+        String base = createBaseDir();
         String peers = String.format("n0-localhost:%d", nextPort());
         String group = UUID.randomUUID().toString();
         String topic = UUID.randomUUID().toString();
@@ -92,10 +94,9 @@ public class DLedgerCommitlogTest extends MessageStoreTestBase {
     }
 
 
-
     @Test
     public void testRecover() throws Exception {
-        String base =  createBaseDir();
+        String base = createBaseDir();
         String peers = String.format("n0-localhost:%d", nextPort());
         String group = UUID.randomUUID().toString();
         String topic = UUID.randomUUID().toString();
@@ -133,10 +134,9 @@ public class DLedgerCommitlogTest extends MessageStoreTestBase {
     }
 
 
-
     @Test
     public void testPutAndGetMessage() throws Exception {
-        String base =  createBaseDir();
+        String base = createBaseDir();
         String peers = String.format("n0-localhost:%d", nextPort());
         String group = UUID.randomUUID().toString();
         DefaultMessageStore messageStore = createDledgerMessageStore(base, group, "n0", peers, null, false, 0);
@@ -145,7 +145,7 @@ public class DLedgerCommitlogTest extends MessageStoreTestBase {
 
         List<PutMessageResult> results = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            MessageExtBrokerInner msgInner =  buildMessage();
+            MessageExtBrokerInner msgInner = buildMessage();
             msgInner.setTopic(topic);
             msgInner.setQueueId(0);
             PutMessageResult putMessageResult = messageStore.putMessage(msgInner);
@@ -157,7 +157,7 @@ public class DLedgerCommitlogTest extends MessageStoreTestBase {
         Assert.assertEquals(0, messageStore.getMinOffsetInQueue(topic, 0));
         Assert.assertEquals(10, messageStore.getMaxOffsetInQueue(topic, 0));
         Assert.assertEquals(0, messageStore.dispatchBehindBytes());
-        GetMessageResult getMessageResult =  messageStore.getMessage("group", topic, 0, 0, 32, null);
+        GetMessageResult getMessageResult = messageStore.getMessage("group", topic, 0, 0, 32, null);
         Assert.assertEquals(GetMessageStatus.FOUND, getMessageResult.getStatus());
 
         Assert.assertEquals(10, getMessageResult.getMessageBufferList().size());
@@ -179,10 +179,10 @@ public class DLedgerCommitlogTest extends MessageStoreTestBase {
     public void testCommittedPos() throws Exception {
         String peers = String.format("n0-localhost:%d;n1-localhost:%d", nextPort(), nextPort());
         String group = UUID.randomUUID().toString();
-        DefaultMessageStore leaderStore = createDledgerMessageStore(createBaseDir(), group,"n0", peers, "n0", false, 0);
+        DefaultMessageStore leaderStore = createDledgerMessageStore(createBaseDir(), group, "n0", peers, "n0", false, 0);
 
         String topic = UUID.randomUUID().toString();
-        MessageExtBrokerInner msgInner =  buildMessage();
+        MessageExtBrokerInner msgInner = buildMessage();
         msgInner.setTopic(topic);
         msgInner.setQueueId(0);
         PutMessageResult putMessageResult = leaderStore.putMessage(msgInner);
@@ -194,7 +194,7 @@ public class DLedgerCommitlogTest extends MessageStoreTestBase {
         Assert.assertEquals(0, leaderStore.getMaxOffsetInQueue(topic, 0));
 
 
-        DefaultMessageStore followerStore = createDledgerMessageStore(createBaseDir(), group,"n1", peers, "n0", false, 0);
+        DefaultMessageStore followerStore = createDledgerMessageStore(createBaseDir(), group, "n1", peers, "n0", false, 0);
         Thread.sleep(2000);
 
         Assert.assertEquals(1, leaderStore.getMaxOffsetInQueue(topic, 0));

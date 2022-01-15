@@ -41,9 +41,10 @@ public class CreateAccessConfigRequestHeader implements CommandCustomHeader {
 
     // list string,eg: groupD=DENY,groupD=SUB
     private String groupPerms;
-    
 
-    @Override public void checkFields() throws RemotingCommandException {
+
+    @Override
+    public void checkFields() throws RemotingCommandException {
 
     }
 

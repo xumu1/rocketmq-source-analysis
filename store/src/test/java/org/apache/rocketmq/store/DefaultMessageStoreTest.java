@@ -31,6 +31,7 @@ import java.nio.channels.OverlappingFileLockException;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.rocketmq.common.BrokerConfig;
 import org.apache.rocketmq.common.UtilAll;
 import org.apache.rocketmq.common.message.MessageExt;
@@ -304,7 +305,7 @@ public class DefaultMessageStoreTest {
         StoreTestUtil.waitCommitLogReput((DefaultMessageStore) messageStore);
 
         ConsumeQueue consumeQueue = getDefaultMessageStore().findConsumeQueue(topic, queueId);
-        int minOffsetInQueue = (int)consumeQueue.getMinOffsetInQueue();
+        int minOffsetInQueue = (int) consumeQueue.getMinOffsetInQueue();
         for (int i = minOffsetInQueue; i < consumeQueue.getMaxOffsetInQueue(); i++) {
             long messageStoreTimeStamp = messageStore.getMessageStoreTimeStamp(topic, queueId, i);
             assertThat(messageStoreTimeStamp).isEqualTo(appendMessageResults[i].getStoreTimestamp());
@@ -354,7 +355,7 @@ public class DefaultMessageStoreTest {
     }
 
     private DefaultMessageStore getDefaultMessageStore() {
-        return (DefaultMessageStore)this.messageStore;
+        return (DefaultMessageStore) this.messageStore;
     }
 
     private AppendMessageResult[] putMessages(int totalCount, String topic, int queueId) {
@@ -374,7 +375,7 @@ public class DefaultMessageStoreTest {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
-                    throw  new RuntimeException("Thread sleep ERROR");
+                    throw new RuntimeException("Thread sleep ERROR");
                 }
             }
         }
@@ -397,7 +398,7 @@ public class DefaultMessageStoreTest {
         try {
             Method getStoreTime = getDefaultMessageStore().getClass().getDeclaredMethod("getStoreTime", SelectMappedBufferResult.class);
             getStoreTime.setAccessible(true);
-            return (long)getStoreTime.invoke(getDefaultMessageStore(), result);
+            return (long) getStoreTime.invoke(getDefaultMessageStore(), result);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
@@ -477,7 +478,7 @@ public class DefaultMessageStoreTest {
             messageStore.putMessage(messageExtBrokerInner);
         }
 
-       // Thread.sleep(100);//wait for build consumer queue
+        // Thread.sleep(100);//wait for build consumer queue
         StoreTestUtil.waitCommitLogReput((DefaultMessageStore) messageStore);
 
         long maxPhyOffset = messageStore.getMaxPhyOffset();

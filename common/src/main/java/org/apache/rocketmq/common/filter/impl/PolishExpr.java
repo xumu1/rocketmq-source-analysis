@@ -98,13 +98,13 @@ public class PolishExpr {
             int chValue = (int) expression.charAt(i);
 
             if ((97 <= chValue && chValue <= 122) || (65 <= chValue && chValue <= 90)
-                || (49 <= chValue && chValue <= 57) || 95 == chValue) {
+                    || (49 <= chValue && chValue <= 57) || 95 == chValue) {
 
                 if (Type.OPERATOR == preType || Type.SEPAERATOR == preType || Type.NULL == preType
-                    || Type.PARENTHESIS == preType) {
+                        || Type.PARENTHESIS == preType) {
                     if (Type.OPERATOR == preType) {
                         segments.add(createOperator(expression.substring(wordStartIndex, wordStartIndex
-                            + wordLen)));
+                                + wordLen)));
                     }
                     wordStartIndex = i;
                     wordLen = 0;
@@ -115,7 +115,7 @@ public class PolishExpr {
 
                 if (Type.OPERATOR == preType) {
                     segments.add(createOperator(expression
-                        .substring(wordStartIndex, wordStartIndex + wordLen)));
+                            .substring(wordStartIndex, wordStartIndex + wordLen)));
                     wordStartIndex = -1;
                     wordLen = 0;
                 } else if (Type.OPERAND == preType) {
@@ -131,7 +131,7 @@ public class PolishExpr {
                 if (Type.OPERAND == preType || Type.SEPAERATOR == preType || Type.PARENTHESIS == preType) {
                     if (Type.OPERAND == preType) {
                         segments.add(new Operand(expression.substring(wordStartIndex, wordStartIndex
-                            + wordLen)));
+                                + wordLen)));
                     }
                     wordStartIndex = i;
                     wordLen = 0;
@@ -142,7 +142,7 @@ public class PolishExpr {
 
                 if (Type.OPERATOR == preType) {
                     segments.add(createOperator(expression
-                        .substring(wordStartIndex, wordStartIndex + wordLen)));
+                            .substring(wordStartIndex, wordStartIndex + wordLen)));
                     wordStartIndex = -1;
                     wordLen = 0;
                 } else if (Type.OPERAND == preType) {

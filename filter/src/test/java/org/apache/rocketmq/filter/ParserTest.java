@@ -44,8 +44,8 @@ public class ParserTest {
     @Test
     public void testParse_valid() {
         for (String expr : Arrays.asList(
-            andExpression, orExpression, inExpression, notInExpression, betweenExpression,
-            equalNullExpression, notEqualNullExpression, nowExpression
+                andExpression, orExpression, inExpression, notInExpression, betweenExpression,
+                equalNullExpression, notEqualNullExpression, nowExpression
         )) {
 
             try {
@@ -86,11 +86,11 @@ public class ParserTest {
         try {
             StringBuffer sb = new StringBuffer(210000);
             sb.append("1");
-            for (int i = 0; i < 2048; i ++) {
+            for (int i = 0; i < 2048; i++) {
                 sb.append("111111111111111111111111111111111111111111111111111");
             }
             sb.append(".");
-            for (int i = 0; i < 2048; i ++) {
+            for (int i = 0; i < 2048; i++) {
                 sb.append("111111111111111111111111111111111111111111111111111");
             }
             String str = sb.toString();

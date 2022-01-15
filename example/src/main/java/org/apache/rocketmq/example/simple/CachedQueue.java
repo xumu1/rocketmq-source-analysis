@@ -18,6 +18,7 @@
 package org.apache.rocketmq.example.simple;
 
 import java.util.TreeMap;
+
 import org.apache.rocketmq.common.message.MessageExt;
 
 public class CachedQueue {

@@ -138,7 +138,7 @@ public abstract class Appender {
                 appenderList.addElement(newAppender);
             }
         }
-        
+
         public int appendLoopOnAppenders(LoggingEvent event) {
             int size = 0;
             Appender appender;

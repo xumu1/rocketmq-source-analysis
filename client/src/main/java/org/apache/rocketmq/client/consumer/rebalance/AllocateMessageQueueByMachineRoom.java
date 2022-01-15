@@ -19,6 +19,7 @@ package org.apache.rocketmq.client.consumer.rebalance;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.rocketmq.client.consumer.AllocateMessageQueueStrategy;
 import org.apache.rocketmq.common.message.MessageQueue;
 
@@ -30,7 +31,7 @@ public class AllocateMessageQueueByMachineRoom implements AllocateMessageQueueSt
 
     @Override
     public List<MessageQueue> allocate(String consumerGroup, String currentCID, List<MessageQueue> mqAll,
-        List<String> cidAll) {
+                                       List<String> cidAll) {
         List<MessageQueue> result = new ArrayList<MessageQueue>();
         // 这代码风格明显和前面的不是一个人写的，233333
         int currentIndex = cidAll.indexOf(currentCID);

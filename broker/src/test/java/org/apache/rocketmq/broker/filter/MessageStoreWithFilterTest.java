@@ -136,7 +136,7 @@ public class MessageStoreWithFilterTest {
 
     protected DefaultMessageStore gen(ConsumerFilterManager filterManager) throws Exception {
         MessageStoreConfig messageStoreConfig = buildStoreConfig(
-            commitLogFileSize, cqFileSize, true, cqExtFileSize
+                commitLogFileSize, cqFileSize, true, cqExtFileSize
         );
 
         BrokerConfig brokerConfig = new BrokerConfig();
@@ -145,15 +145,15 @@ public class MessageStoreWithFilterTest {
         brokerConfig.setExpectConsumerNumUseFilter(64);
 
         DefaultMessageStore master = new DefaultMessageStore(
-            messageStoreConfig,
-            new BrokerStatsManager(brokerConfig.getBrokerClusterName()),
-            new MessageArrivingListener() {
-                @Override
-                public void arriving(String topic, int queueId, long logicOffset, long tagsCode,
-                                     long msgStoreTime, byte[] filterBitMap, Map<String, String> properties) {
+                messageStoreConfig,
+                new BrokerStatsManager(brokerConfig.getBrokerClusterName()),
+                new MessageArrivingListener() {
+                    @Override
+                    public void arriving(String topic, int queueId, long logicOffset, long tagsCode,
+                                         long msgStoreTime, byte[] filterBitMap, Map<String, String> properties) {
+                    }
                 }
-            }
-            , brokerConfig);
+                , brokerConfig);
 
         master.getDispatcherList().addFirst(new CommitLogDispatcher() {
             @Override
@@ -239,11 +239,11 @@ public class MessageStoreWithFilterTest {
             resetSubData.setSubString("a is not null OR a is null");
 
             ConsumerFilterData resetFilterData = ConsumerFilterManager.build(topic,
-                resetGroup, resetSubData.getSubString(), resetSubData.getExpressionType(),
-                System.currentTimeMillis());
+                    resetGroup, resetSubData.getSubString(), resetSubData.getExpressionType(),
+                    System.currentTimeMillis());
 
             GetMessageResult resetGetResult = master.getMessage(resetGroup, topic, queueId, 0, 1000,
-                new ExpressionMessageFilter(resetSubData, resetFilterData, filterManager));
+                    new ExpressionMessageFilter(resetSubData, resetFilterData, filterManager));
 
             try {
                 assertThat(resetGetResult).isNotNull();
@@ -270,7 +270,7 @@ public class MessageStoreWithFilterTest {
             List<MessageExtBrokerInner> filteredMsgs = filtered(msgs, normalFilterData);
 
             GetMessageResult normalGetResult = master.getMessage(normalGroup, topic, queueId, 0, 1000,
-                new ExpressionMessageFilter(normalSubData, normalFilterData, filterManager));
+                    new ExpressionMessageFilter(normalSubData, normalFilterData, filterManager));
 
             try {
                 assertThat(normalGetResult).isNotNull();
@@ -305,7 +305,7 @@ public class MessageStoreWithFilterTest {
                 subscriptionData.setSubString(filterData.getExpression());
 
                 GetMessageResult getMessageResult = master.getMessage(group, realTopic, queueId, 0, 10000,
-                    new ExpressionMessageFilter(subscriptionData, filterData, filterManager));
+                        new ExpressionMessageFilter(subscriptionData, filterData, filterManager));
                 String assertMsg = group + "-" + realTopic;
                 try {
                     assertThat(getMessageResult).isNotNull();
@@ -353,20 +353,20 @@ public class MessageStoreWithFilterTest {
             String realTopic = topic + i;
 
             GetMessageResult getMessageResult = master.getMessage("test", realTopic, queueId, 0, 10000,
-                new MessageFilter() {
-                    @Override
-                    public boolean isMatchedByConsumeQueue(Long tagsCode, ConsumeQueueExt.CqExtUnit cqExtUnit) {
-                        if (tagsCode != null && tagsCode <= ConsumeQueueExt.MAX_ADDR) {
-                            return false;
+                    new MessageFilter() {
+                        @Override
+                        public boolean isMatchedByConsumeQueue(Long tagsCode, ConsumeQueueExt.CqExtUnit cqExtUnit) {
+                            if (tagsCode != null && tagsCode <= ConsumeQueueExt.MAX_ADDR) {
+                                return false;
+                            }
+                            return true;
                         }
-                        return true;
-                    }
 
-                    @Override
-                    public boolean isMatchedByCommitLog(ByteBuffer msgBuffer, Map<String, String> properties) {
-                        return true;
-                    }
-                });
+                        @Override
+                        public boolean isMatchedByCommitLog(ByteBuffer msgBuffer, Map<String, String> properties) {
+                            return true;
+                        }
+                    });
             assertThat(getMessageResult.getMessageCount()).isEqualTo(msgPerTopic);
         }
     }

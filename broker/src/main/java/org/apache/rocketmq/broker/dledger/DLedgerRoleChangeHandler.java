@@ -20,8 +20,10 @@ import io.openmessaging.storage.dledger.DLedgerLeaderElector;
 import io.openmessaging.storage.dledger.DLedgerServer;
 import io.openmessaging.storage.dledger.MemberState;
 import io.openmessaging.storage.dledger.utils.DLedgerUtils;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import org.apache.rocketmq.broker.BrokerController;
 import org.apache.rocketmq.common.ThreadFactoryImpl;
 import org.apache.rocketmq.common.constant.LoggerName;
@@ -39,6 +41,7 @@ public class DLedgerRoleChangeHandler implements DLedgerLeaderElector.RoleChange
     private DefaultMessageStore messageStore;
     private DLedgerCommitLog dLedgerCommitLog;
     private DLedgerServer dLegerServer;
+
     public DLedgerRoleChangeHandler(BrokerController brokerController, DefaultMessageStore messageStore) {
         this.brokerController = brokerController;
         this.messageStore = messageStore;
@@ -74,7 +77,7 @@ public class DLedgerRoleChangeHandler implements DLedgerLeaderElector.RoleChange
                                     break;
                                 }
                                 if (dLegerServer.getdLedgerStore().getLedgerEndIndex() == dLegerServer.getdLedgerStore().getCommittedIndex()
-                                    && messageStore.dispatchBehindBytes() == 0) {
+                                        && messageStore.dispatchBehindBytes() == 0) {
                                     break;
                                 }
                                 Thread.sleep(100);
@@ -96,11 +99,13 @@ public class DLedgerRoleChangeHandler implements DLedgerLeaderElector.RoleChange
         executorService.submit(runnable);
     }
 
-    @Override public void startup() {
+    @Override
+    public void startup() {
 
     }
 
-    @Override public void shutdown() {
+    @Override
+    public void shutdown() {
         executorService.shutdown();
     }
 }

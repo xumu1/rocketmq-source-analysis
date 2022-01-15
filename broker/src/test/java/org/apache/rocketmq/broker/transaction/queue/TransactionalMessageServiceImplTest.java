@@ -71,7 +71,7 @@ public class TransactionalMessageServiceImplTest {
 
     @Spy
     private BrokerController brokerController = new BrokerController(new BrokerConfig(), new NettyServerConfig(),
-        new NettyClientConfig(), new MessageStoreConfig());
+            new NettyClientConfig(), new MessageStoreConfig());
 
     @Mock
     private AbstractTransactionalMessageCheckListener listener;
@@ -87,7 +87,7 @@ public class TransactionalMessageServiceImplTest {
     public void testPrepareMessage() {
         MessageExtBrokerInner inner = createMessageBrokerInner();
         when(bridge.putHalfMessage(any(MessageExtBrokerInner.class))).thenReturn(new PutMessageResult
-            (PutMessageStatus.PUT_OK, new AppendMessageResult(AppendMessageStatus.PUT_OK)));
+                (PutMessageStatus.PUT_OK, new AppendMessageResult(AppendMessageStatus.PUT_OK)));
         PutMessageResult result = queueTransactionMsgService.prepareMessage(inner);
         assert result.isOk();
     }
@@ -135,7 +135,7 @@ public class TransactionalMessageServiceImplTest {
         when(bridge.getBrokerController()).thenReturn(this.brokerController);
         when(bridge.renewHalfMessageInner(any(MessageExtBrokerInner.class))).thenReturn(createMessageBrokerInner());
         when(bridge.putMessageReturnResult(any(MessageExtBrokerInner.class))).thenReturn(new PutMessageResult
-            (PutMessageStatus.PUT_OK, new AppendMessageResult(AppendMessageStatus.PUT_OK)));
+                (PutMessageStatus.PUT_OK, new AppendMessageResult(AppendMessageStatus.PUT_OK)));
         long timeOut = this.brokerController.getBrokerConfig().getTransactionTimeOut();
         final int checkMax = this.brokerController.getBrokerConfig().getTransactionCheckMax();
         final AtomicInteger checkMessage = new AtomicInteger(0);
@@ -176,10 +176,10 @@ public class TransactionalMessageServiceImplTest {
         PullResult result = null;
         if (0 == size) {
             result = new PullResult(PullStatus.NO_NEW_MSG, 1, 0, 1,
-                null);
+                    null);
         } else {
             result = new PullResult(PullStatus.FOUND, 1, 0, 1,
-                getMessageList(queueOffset, topic, body, 1));
+                    getMessageList(queueOffset, topic, body, 1));
             return result;
         }
         return result;

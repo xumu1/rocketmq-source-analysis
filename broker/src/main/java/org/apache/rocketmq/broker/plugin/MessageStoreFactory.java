@@ -19,12 +19,13 @@ package org.apache.rocketmq.broker.plugin;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+
 import org.apache.rocketmq.store.MessageStore;
 
 // 装饰器，一层套一层
 public final class MessageStoreFactory {
     public final static MessageStore build(MessageStorePluginContext context, MessageStore messageStore)
-        throws IOException {
+            throws IOException {
         // 获取 messageStore 的 plugin
         String plugin = context.getBrokerConfig().getMessageStorePlugIn();
         if (plugin != null && plugin.trim().length() != 0) {
@@ -38,7 +39,7 @@ public final class MessageStoreFactory {
                     messageStore = construct.newInstance(context, messageStore);
                 } catch (Throwable e) {
                     throw new RuntimeException(String.format(
-                        "Initialize plugin's class %s not found!", pluginClass), e);
+                            "Initialize plugin's class %s not found!", pluginClass), e);
                 }
             }
         }

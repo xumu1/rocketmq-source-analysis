@@ -19,6 +19,7 @@ package org.apache.rocketmq.common.protocol.body;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.rocketmq.common.admin.ConsumeStats;
 import org.apache.rocketmq.remoting.protocol.RemotingSerializable;
 

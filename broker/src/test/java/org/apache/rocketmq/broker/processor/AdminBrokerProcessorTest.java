@@ -17,8 +17,10 @@
 package org.apache.rocketmq.broker.processor;
 
 import io.netty.channel.ChannelHandlerContext;
+
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+
 import org.apache.rocketmq.broker.BrokerController;
 import org.apache.rocketmq.common.BrokerConfig;
 import org.apache.rocketmq.common.message.MessageAccessor;
@@ -61,8 +63,8 @@ public class AdminBrokerProcessorTest {
 
     @Spy
     private BrokerController
-        brokerController = new BrokerController(new BrokerConfig(), new NettyServerConfig(), new NettyClientConfig(),
-        new MessageStoreConfig());
+            brokerController = new BrokerController(new BrokerConfig(), new NettyServerConfig(), new NettyClientConfig(),
+            new MessageStoreConfig());
 
     @Mock
     private MessageStore messageStore;
@@ -106,10 +108,11 @@ public class AdminBrokerProcessorTest {
         return messageExt;
     }
 
-    private SelectMappedBufferResult createSelectMappedBufferResult(){
-        SelectMappedBufferResult result = new SelectMappedBufferResult(0, ByteBuffer.allocate(1024) ,0, new MappedFile());
+    private SelectMappedBufferResult createSelectMappedBufferResult() {
+        SelectMappedBufferResult result = new SelectMappedBufferResult(0, ByteBuffer.allocate(1024), 0, new MappedFile());
         return result;
     }
+
     private ResumeCheckHalfMessageRequestHeader createResumeCheckHalfMessageRequestHeader() {
         ResumeCheckHalfMessageRequestHeader header = new ResumeCheckHalfMessageRequestHeader();
         header.setMsgId("C0A803CA00002A9F0000000000031367");

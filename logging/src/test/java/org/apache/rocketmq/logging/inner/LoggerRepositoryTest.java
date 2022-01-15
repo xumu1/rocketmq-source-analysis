@@ -33,9 +33,9 @@ public class LoggerRepositoryTest extends BasicLoggerTest {
         Logger fileLogger = Logger.getLogger("repoLogger");
 
         Appender myappender = LoggingBuilder.newAppenderBuilder()
-            .withDailyFileRollingAppender(file, "'.'yyyy-MM-dd")
-            .withName("repoAppender")
-            .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
+                .withDailyFileRollingAppender(file, "'.'yyyy-MM-dd")
+                .withName("repoAppender")
+                .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
 
         fileLogger.addAppender(myappender);
         Logger.getLogger("repoLogger").setLevel(Level.INFO);

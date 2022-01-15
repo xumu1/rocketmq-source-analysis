@@ -46,7 +46,7 @@ public class LayoutTest extends BasicLoggerTest {
         Layout innerLayout = LoggingBuilder.newLayoutBuilder().withDefaultLayout().build();
 
         LoggingEvent loggingEvent = new LoggingEvent(Logger.class.getName(), logger, org.apache.rocketmq.logging.inner.Level.INFO,
-            "junit test error", null);
+                "junit test error", null);
         String format = innerLayout.format(loggingEvent);
 
         System.out.println(format);

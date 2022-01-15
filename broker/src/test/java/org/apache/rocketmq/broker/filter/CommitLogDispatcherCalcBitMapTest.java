@@ -40,10 +40,10 @@ public class CommitLogDispatcherCalcBitMapTest {
         ConsumerFilterManager filterManager = new ConsumerFilterManager();
 
         filterManager.register("topic0", "CID_0", "a is not null and a >= 5",
-            ExpressionType.SQL92, System.currentTimeMillis());
+                ExpressionType.SQL92, System.currentTimeMillis());
 
         filterManager.register("topic0", "CID_1", "a is not null and a >= 15",
-            ExpressionType.SQL92, System.currentTimeMillis());
+                ExpressionType.SQL92, System.currentTimeMillis());
 
         ConsumerFilterData nullExpression = filterManager.get("topic0", "CID_0");
         nullExpression.setExpression(null);
@@ -52,7 +52,7 @@ public class CommitLogDispatcherCalcBitMapTest {
         nullBloomData.setBloomFilterData(null);
 
         CommitLogDispatcherCalcBitMap calcBitMap = new CommitLogDispatcherCalcBitMap(brokerConfig,
-            filterManager);
+                filterManager);
 
         for (int i = 0; i < 1; i++) {
             Map<String, String> properties = new HashMap<String, String>(4);
@@ -61,18 +61,18 @@ public class CommitLogDispatcherCalcBitMapTest {
             String topic = "topic" + i;
 
             DispatchRequest dispatchRequest = new DispatchRequest(
-                topic,
-                0,
-                i * 100 + 123,
-                100,
-                (long) ("tags" + i).hashCode(),
-                System.currentTimeMillis(),
-                i,
-                null,
-                UUID.randomUUID().toString(),
-                0,
-                0,
-                properties
+                    topic,
+                    0,
+                    i * 100 + 123,
+                    100,
+                    (long) ("tags" + i).hashCode(),
+                    System.currentTimeMillis(),
+                    i,
+                    null,
+                    UUID.randomUUID().toString(),
+                    0,
+                    0,
+                    properties
             );
 
             calcBitMap.dispatch(dispatchRequest);
@@ -80,7 +80,7 @@ public class CommitLogDispatcherCalcBitMapTest {
             assertThat(dispatchRequest.getBitMap()).isNotNull();
 
             BitsArray bitsArray = BitsArray.create(dispatchRequest.getBitMap(),
-                filterManager.getBloomFilter().getM());
+                    filterManager.getBloomFilter().getM());
 
             for (int j = 0; j < bitsArray.bitLength(); j++) {
                 assertThat(bitsArray.getBit(j)).isFalse();
@@ -96,7 +96,7 @@ public class CommitLogDispatcherCalcBitMapTest {
         ConsumerFilterManager filterManager = new ConsumerFilterManager();
 
         CommitLogDispatcherCalcBitMap calcBitMap = new CommitLogDispatcherCalcBitMap(brokerConfig,
-            filterManager);
+                filterManager);
 
         for (int i = 0; i < 10; i++) {
             Map<String, String> properties = new HashMap<String, String>(4);
@@ -105,18 +105,18 @@ public class CommitLogDispatcherCalcBitMapTest {
             String topic = "topic" + i;
 
             DispatchRequest dispatchRequest = new DispatchRequest(
-                topic,
-                0,
-                i * 100 + 123,
-                100,
-                (long) ("tags" + i).hashCode(),
-                System.currentTimeMillis(),
-                i,
-                null,
-                UUID.randomUUID().toString(),
-                0,
-                0,
-                properties
+                    topic,
+                    0,
+                    i * 100 + 123,
+                    100,
+                    (long) ("tags" + i).hashCode(),
+                    System.currentTimeMillis(),
+                    i,
+                    null,
+                    UUID.randomUUID().toString(),
+                    0,
+                    0,
+                    properties
             );
 
             calcBitMap.dispatch(dispatchRequest);
@@ -133,7 +133,7 @@ public class CommitLogDispatcherCalcBitMapTest {
         ConsumerFilterManager filterManager = ConsumerFilterManagerTest.gen(10, 10);
 
         CommitLogDispatcherCalcBitMap calcBitMap = new CommitLogDispatcherCalcBitMap(brokerConfig,
-            filterManager);
+                filterManager);
 
         for (int i = 0; i < 10; i++) {
             Map<String, String> properties = new HashMap<String, String>(4);
@@ -142,18 +142,18 @@ public class CommitLogDispatcherCalcBitMapTest {
             String topic = "topic" + i;
 
             DispatchRequest dispatchRequest = new DispatchRequest(
-                topic,
-                0,
-                i * 100 + 123,
-                100,
-                (long) ("tags" + i).hashCode(),
-                System.currentTimeMillis(),
-                i,
-                null,
-                UUID.randomUUID().toString(),
-                0,
-                0,
-                properties
+                    topic,
+                    0,
+                    i * 100 + 123,
+                    100,
+                    (long) ("tags" + i).hashCode(),
+                    System.currentTimeMillis(),
+                    i,
+                    null,
+                    UUID.randomUUID().toString(),
+                    0,
+                    0,
+                    properties
             );
 
             calcBitMap.dispatch(dispatchRequest);
@@ -169,7 +169,7 @@ public class CommitLogDispatcherCalcBitMapTest {
                 if (filterManager.getBloomFilter().isHit(filterData.getBloomFilterData(), bits)) {
                     try {
                         assertThat((Boolean) filterData.getCompiledExpression().evaluate(
-                            new MessageEvaluationContext(properties)
+                                new MessageEvaluationContext(properties)
                         )).isTrue();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -178,7 +178,7 @@ public class CommitLogDispatcherCalcBitMapTest {
                 } else {
                     try {
                         assertThat((Boolean) filterData.getCompiledExpression().evaluate(
-                            new MessageEvaluationContext(properties)
+                                new MessageEvaluationContext(properties)
                         )).isFalse();
                     } catch (Exception e) {
                         e.printStackTrace();

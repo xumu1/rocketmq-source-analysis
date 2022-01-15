@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.rocketmq.common.UtilAll;
 import org.apache.rocketmq.logging.InternalLogger;
 
@@ -42,7 +43,7 @@ public class StatsItem {
     private final InternalLogger log;
 
     public StatsItem(String statsName, String statsKey, ScheduledExecutorService scheduledExecutorService,
-        InternalLogger log) {
+                     InternalLogger log) {
         this.statsName = statsName;
         this.statsKey = statsKey;
         this.scheduledExecutorService = scheduledExecutorService;
@@ -153,7 +154,7 @@ public class StatsItem {
     public void samplingInSeconds() {
         synchronized (this.csListMinute) {
             this.csListMinute.add(new CallSnapshot(System.currentTimeMillis(), this.times.get(), this.value
-                .get()));
+                    .get()));
             if (this.csListMinute.size() > 7) {
                 this.csListMinute.removeFirst();
             }
@@ -163,7 +164,7 @@ public class StatsItem {
     public void samplingInMinutes() {
         synchronized (this.csListHour) {
             this.csListHour.add(new CallSnapshot(System.currentTimeMillis(), this.times.get(), this.value
-                .get()));
+                    .get()));
             if (this.csListHour.size() > 7) {
                 this.csListHour.removeFirst();
             }
@@ -173,7 +174,7 @@ public class StatsItem {
     public void samplingInHour() {
         synchronized (this.csListDay) {
             this.csListDay.add(new CallSnapshot(System.currentTimeMillis(), this.times.get(), this.value
-                .get()));
+                    .get()));
             if (this.csListDay.size() > 25) {
                 this.csListDay.removeFirst();
             }
@@ -183,31 +184,31 @@ public class StatsItem {
     public void printAtMinutes() {
         StatsSnapshot ss = computeStatsData(this.csListMinute);
         log.info(String.format("[%s] [%s] Stats In One Minute, SUM: %d TPS: %.2f AVGPT: %.2f",
-            this.statsName,
-            this.statsKey,
-            ss.getSum(),
-            ss.getTps(),
-            ss.getAvgpt()));
+                this.statsName,
+                this.statsKey,
+                ss.getSum(),
+                ss.getTps(),
+                ss.getAvgpt()));
     }
 
     public void printAtHour() {
         StatsSnapshot ss = computeStatsData(this.csListHour);
         log.info(String.format("[%s] [%s] Stats In One Hour, SUM: %d TPS: %.2f AVGPT: %.2f",
-            this.statsName,
-            this.statsKey,
-            ss.getSum(),
-            ss.getTps(),
-            ss.getAvgpt()));
+                this.statsName,
+                this.statsKey,
+                ss.getSum(),
+                ss.getTps(),
+                ss.getAvgpt()));
     }
 
     public void printAtDay() {
         StatsSnapshot ss = computeStatsData(this.csListDay);
         log.info(String.format("[%s] [%s] Stats In One Day, SUM: %d TPS: %.2f AVGPT: %.2f",
-            this.statsName,
-            this.statsKey,
-            ss.getSum(),
-            ss.getTps(),
-            ss.getAvgpt()));
+                this.statsName,
+                this.statsKey,
+                ss.getSum(),
+                ss.getTps(),
+                ss.getAvgpt()));
     }
 
     public AtomicLong getValue() {

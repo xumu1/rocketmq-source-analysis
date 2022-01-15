@@ -49,7 +49,7 @@ public class PutMessageResult {
     @Override
     public String toString() {
         return "PutMessageResult [putMessageStatus=" + putMessageStatus + ", appendMessageResult="
-            + appendMessageResult + "]";
+                + appendMessageResult + "]";
     }
 
 }

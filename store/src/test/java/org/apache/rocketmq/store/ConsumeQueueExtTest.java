@@ -38,7 +38,7 @@ public class ConsumeQueueExtTest {
 
     protected ConsumeQueueExt genExt() {
         return new ConsumeQueueExt(
-            topic, queueId, storePath, cqExtFileSize, bitMapLength
+                topic, queueId, storePath, cqExtFileSize, bitMapLength
         );
     }
 
@@ -64,10 +64,10 @@ public class ConsumeQueueExtTest {
     }
 
     protected void putSth(ConsumeQueueExt consumeQueueExt, boolean getAfterPut,
-        boolean unitSameSize, int unitCount) {
+                          boolean unitSameSize, int unitCount) {
         for (int i = 0; i < unitCount; i++) {
             ConsumeQueueExt.CqExtUnit putUnit =
-                unitSameSize ? genUnit(true) : genUnit(i % 2 == 0);
+                    unitSameSize ? genUnit(true) : genUnit(i % 2 == 0);
 
             long addr = consumeQueueExt.put(putUnit);
             assertThat(addr).isLessThan(0);
@@ -179,7 +179,7 @@ public class ConsumeQueueExtTest {
                 assertThat(loadCqExt.unDecorate(loadCqExt.getMaxAddress()) % cqExtFileSize).isEqualTo(0);
             } else {
                 assertThat(loadCqExt.unDecorate(loadCqExt.getMaxAddress()))
-                    .isEqualTo(lastFileUnitCount * unitSizeWithBitMap + (fileCount - 1) * cqExtFileSize);
+                        .isEqualTo(lastFileUnitCount * unitSizeWithBitMap + (fileCount - 1) * cqExtFileSize);
             }
         } finally {
             putCqExt.destroy();

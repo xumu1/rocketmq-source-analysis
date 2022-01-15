@@ -18,6 +18,7 @@
 package org.apache.rocketmq.common.utils;
 
 import io.netty.channel.Channel;
+
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 

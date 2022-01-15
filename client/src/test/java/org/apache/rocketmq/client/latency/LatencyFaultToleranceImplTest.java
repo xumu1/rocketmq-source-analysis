@@ -17,6 +17,7 @@
 package org.apache.rocketmq.client.latency;
 
 import java.util.concurrent.TimeUnit;
+
 import org.junit.Before;
 import org.junit.Test;
 

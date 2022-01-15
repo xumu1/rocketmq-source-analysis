@@ -19,6 +19,7 @@ package org.apache.rocketmq.remoting.protocol;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
+
 import org.apache.rocketmq.remoting.CommandCustomHeader;
 import org.apache.rocketmq.remoting.annotation.CFNotNull;
 import org.apache.rocketmq.remoting.exception.RemotingCommandException;
@@ -32,7 +33,7 @@ public class RemotingCommandTest {
         int source = 261;
         SerializeType type = SerializeType.JSON;
         byte[] result = RemotingCommand.markProtocolType(source, type);
-        assertThat(result).isEqualTo(new byte[] {0, 0, 1, 5});
+        assertThat(result).isEqualTo(new byte[]{0, 0, 1, 5});
     }
 
     @Test
@@ -40,7 +41,7 @@ public class RemotingCommandTest {
         int source = 16777215;
         SerializeType type = SerializeType.ROCKETMQ;
         byte[] result = RemotingCommand.markProtocolType(source, type);
-        assertThat(result).isEqualTo(new byte[] {1, -1, -1, -1});
+        assertThat(result).isEqualTo(new byte[]{1, -1, -1, -1});
     }
 
     @Test
@@ -131,7 +132,7 @@ public class RemotingCommandTest {
         int code = 103; //org.apache.rocketmq.common.protocol.RequestCode.REGISTER_BROKER
         CommandCustomHeader header = new SampleCommandCustomHeader();
         RemotingCommand cmd = RemotingCommand.createRequestCommand(code, header);
-        cmd.setBody(new byte[] {0, 1, 2, 3, 4});
+        cmd.setBody(new byte[]{0, 1, 2, 3, 4});
 
         ByteBuffer buffer = cmd.encode();
 
@@ -144,7 +145,7 @@ public class RemotingCommandTest {
         RemotingCommand decodedCommand = RemotingCommand.decode(buffer);
 
         assertThat(decodedCommand.getSerializeTypeCurrentRPC()).isEqualTo(SerializeType.JSON);
-        assertThat(decodedCommand.getBody()).isEqualTo(new byte[] {0, 1, 2, 3, 4});
+        assertThat(decodedCommand.getBody()).isEqualTo(new byte[]{0, 1, 2, 3, 4});
     }
 
     @Test

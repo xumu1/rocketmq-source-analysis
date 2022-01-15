@@ -20,9 +20,12 @@ package org.apache.rocketmq.common;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
 import org.apache.rocketmq.common.protocol.body.RegisterBrokerBody;
 import org.apache.rocketmq.common.protocol.body.TopicConfigSerializeWrapper;
+
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 public class RegisterBrokerBodyTest {
@@ -31,7 +34,7 @@ public class RegisterBrokerBodyTest {
         RegisterBrokerBody registerBrokerBody = new RegisterBrokerBody();
         TopicConfigSerializeWrapper topicConfigSerializeWrapper = new TopicConfigSerializeWrapper();
         registerBrokerBody.setTopicConfigSerializeWrapper(topicConfigSerializeWrapper);
-        
+
         ConcurrentMap<String, TopicConfig> topicConfigTable = new ConcurrentHashMap<String, TopicConfig>();
         for (int i = 0; i < 10000; i++) {
             topicConfigTable.put(String.valueOf(i), new TopicConfig(String.valueOf(i)));

@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class QueryConsumeQueueResponseBodyTest {
 
     @Test
-    public void test(){
+    public void test() {
         QueryConsumeQueueResponseBody body = new QueryConsumeQueueResponseBody();
 
         SubscriptionData subscriptionData = new SubscriptionData();

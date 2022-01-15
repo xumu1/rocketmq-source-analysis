@@ -25,7 +25,8 @@ public class UpdateGlobalWhiteAddrsConfigRequestHeader implements CommandCustomH
     @CFNotNull
     private String globalWhiteAddrs;
 
-    @Override public void checkFields() throws RemotingCommandException {
+    @Override
+    public void checkFields() throws RemotingCommandException {
 
     }
 

@@ -80,8 +80,8 @@ public class BloomFilterData {
     @Override
     public String toString() {
         return "BloomFilterData{" +
-            "bitPos=" + Arrays.toString(bitPos) +
-            ", bitNum=" + bitNum +
-            '}';
+                "bitPos=" + Arrays.toString(bitPos) +
+                ", bitNum=" + bitNum +
+                '}';
     }
 }

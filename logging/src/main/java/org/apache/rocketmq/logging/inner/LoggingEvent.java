@@ -103,7 +103,7 @@ public class LoggingEvent implements java.io.Serializable {
         }
         pw.flush();
         LineNumberReader reader = new LineNumberReader(
-            new StringReader(sw.toString()));
+                new StringReader(sw.toString()));
         ArrayList<String> lines = new ArrayList<String>();
         try {
             String line = reader.readLine();

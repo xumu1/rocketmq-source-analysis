@@ -45,8 +45,8 @@ public class LoggerTest extends BasicLoggerTest {
         System.setOut(new PrintStream(byteArrayOutputStream));
 
         Appender consoleAppender = LoggingBuilder.newAppenderBuilder()
-            .withConsoleAppender(LoggingBuilder.SYSTEM_OUT)
-            .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
+                .withConsoleAppender(LoggingBuilder.SYSTEM_OUT)
+                .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
 
         Logger.getLogger("ConsoleLogger").addAppender(consoleAppender);
         Logger.getLogger("ConsoleLogger").setLevel(Level.INFO);
@@ -59,7 +59,7 @@ public class LoggerTest extends BasicLoggerTest {
         consoleLogger1.info("console {} test", "simple");
         consoleLogger1.info("[WATERMARK] Send Queue Size: {} SlowTimeMills: {}", 1, 300);
         consoleLogger1.info("new consumer connected, group: {} {} {} channel: {}", "mygroup", "orderly",
-            "broudcast", new RuntimeException("simple object"));
+                "broudcast", new RuntimeException("simple object"));
 
         System.setOut(out);
         consoleAppender.close();
@@ -84,9 +84,9 @@ public class LoggerTest extends BasicLoggerTest {
         Logger fileLogger = Logger.getLogger("innerLogger");
 
         Appender myappender = LoggingBuilder.newAppenderBuilder()
-            .withDailyFileRollingAppender(file, "'.'yyyy-MM-dd")
-            .withName("innerAppender")
-            .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
+                .withDailyFileRollingAppender(file, "'.'yyyy-MM-dd")
+                .withName("innerAppender")
+                .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
 
         fileLogger.addAppender(myappender);
         fileLogger.setLevel(Level.INFO);

@@ -18,10 +18,12 @@
 package org.apache.rocketmq.namesrv.processor;
 
 import io.netty.channel.ChannelHandlerContext;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.apache.rocketmq.client.ClientConfig;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.impl.MQClientAPIImpl;
@@ -59,8 +61,8 @@ public class ClusterTestRequestProcessorTest {
     @Before
     public void init() throws NoSuchFieldException, IllegalAccessException, RemotingException, MQClientException, InterruptedException {
         NamesrvController namesrvController = new NamesrvController(
-            new NamesrvConfig(),
-            new NettyServerConfig()
+                new NamesrvConfig(),
+                new NettyServerConfig()
         );
 
         clusterTestProcessor = new ClusterTestRequestProcessor(namesrvController, "default-producer");

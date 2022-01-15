@@ -36,8 +36,8 @@ public class AppenderTest extends BasicLoggerTest {
         System.setOut(new PrintStream(byteArrayOutputStream));
 
         Appender consoleAppender = LoggingBuilder.newAppenderBuilder()
-            .withConsoleAppender(LoggingBuilder.SYSTEM_OUT)
-            .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
+                .withConsoleAppender(LoggingBuilder.SYSTEM_OUT)
+                .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
 
         LoggingBuilder.ConsoleAppender consoleAppender1 = (LoggingBuilder.ConsoleAppender) consoleAppender;
         String target = consoleAppender1.getTarget();
@@ -75,9 +75,9 @@ public class AppenderTest extends BasicLoggerTest {
         Logger fileLogger = Logger.getLogger("fileLogger");
 
         Appender myappender = LoggingBuilder.newAppenderBuilder()
-            .withDailyFileRollingAppender(file, "'.'yyyy-MM-dd")
-            .withName("myappender")
-            .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
+                .withDailyFileRollingAppender(file, "'.'yyyy-MM-dd")
+                .withName("myappender")
+                .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
 
         fileLogger.addAppender(myappender);
 
@@ -99,12 +99,11 @@ public class AppenderTest extends BasicLoggerTest {
     }
 
 
-
     @Test
     public void asyncAppenderTest() {
         Appender appender = LoggingBuilder.newAppenderBuilder().withAsync(false, 1024)
-            .withConsoleAppender(LoggingBuilder.SYSTEM_OUT)
-            .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
+                .withConsoleAppender(LoggingBuilder.SYSTEM_OUT)
+                .withLayout(LoggingBuilder.newLayoutBuilder().withDefaultLayout().build()).build();
         Assert.assertTrue(appender instanceof LoggingBuilder.AsyncAppender);
         LoggingBuilder.AsyncAppender asyncAppender = (LoggingBuilder.AsyncAppender) appender;
         Assert.assertTrue(!asyncAppender.getBlocking());
@@ -121,7 +120,7 @@ public class AppenderTest extends BasicLoggerTest {
     @Test
     public void testFileAppender() throws IOException {
         LoggingBuilder.FileAppender fileAppender = new LoggingBuilder.FileAppender(
-            new LoggingBuilder.SimpleLayout(), loggingDir + "/simple.log", true);
+                new LoggingBuilder.SimpleLayout(), loggingDir + "/simple.log", true);
         fileAppender.setBufferSize(1024);
         int bufferSize = fileAppender.getBufferSize();
         boolean bufferedIO = fileAppender.getBufferedIO();

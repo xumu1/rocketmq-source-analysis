@@ -25,7 +25,7 @@ import org.junit.Test;
 public class MessageFormatterTest {
 
     @Test
-    public void formatTest(){
+    public void formatTest() {
         InnerLoggerFactory.FormattingTuple logging = InnerLoggerFactory.MessageFormatter.format("this is {},and {}", "logging", 6546);
         String message = logging.getMessage();
         Assert.assertTrue(message.contains("logging"));
