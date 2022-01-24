@@ -16,8 +16,6 @@
  */
 package org.apache.rocketmq.namesrv;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 
 import java.io.BufferedInputStream;
@@ -25,7 +23,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.concurrent.Callable;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -33,20 +30,14 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
 import org.apache.rocketmq.common.MQVersion;
 import org.apache.rocketmq.common.MixAll;
-import org.apache.rocketmq.common.constant.LoggerName;
-import org.apache.rocketmq.logging.InternalLogger;
-import org.apache.rocketmq.logging.InternalLoggerFactory;
 import org.apache.rocketmq.common.namesrv.NamesrvConfig;
 import org.apache.rocketmq.remoting.netty.NettyServerConfig;
 import org.apache.rocketmq.remoting.protocol.RemotingCommand;
 import org.apache.rocketmq.srvutil.ServerUtil;
-import org.apache.rocketmq.srvutil.ShutdownHookThread;
-import org.slf4j.LoggerFactory;
 
 // 启动类，main 函数
 public class NamesrvStartup {
 
-    private static InternalLogger log;
     private static Properties properties = null;
     private static CommandLine commandLine = null;
 
@@ -58,12 +49,8 @@ public class NamesrvStartup {
     public static NamesrvController main0(String[] args) {
 
         try {
-            // 创建一个 NamesrvController 实栗
             NamesrvController controller = createNamesrvController(args);
             start(controller);
-            String tip = "The Name Server boot success. serializeType=" + RemotingCommand.getSerializeTypeConfigInThisServer();
-            log.info(tip);
-            System.out.printf("%s%n", tip);
             return controller;
         } catch (Throwable e) {
             e.printStackTrace();
@@ -75,7 +62,6 @@ public class NamesrvStartup {
 
     public static NamesrvController createNamesrvController(String[] args) throws IOException, JoranException {
         System.setProperty(RemotingCommand.REMOTING_VERSION_KEY, Integer.toString(MQVersion.CURRENT_VERSION));
-        //PackageConflictDetect.detectFastjson();
 
         Options options = ServerUtil.buildCommandlineOptions(new Options());
         commandLine = ServerUtil.parseCmdLine("mqnamesrv", args, buildCommandlineOptions(options), new PosixParser());
@@ -92,48 +78,16 @@ public class NamesrvStartup {
         // 启动的时候设置了 -c 参数，arg 是 configFile
         if (commandLine.hasOption('c')) {
             String file = commandLine.getOptionValue('c');
-            if (file != null) {
-                // 获取配置文件
-                InputStream in = new BufferedInputStream(new FileInputStream(file));
-                properties = new Properties();
-                properties.load(in);
-                // 将 file 中定义的 key 写入 namesrvConfig 或 nettyServerConfig
-                MixAll.properties2Object(properties, namesrvConfig);
-                MixAll.properties2Object(properties, nettyServerConfig);
+            // 获取配置文件
+            InputStream in = new BufferedInputStream(new FileInputStream(file));
+            properties = new Properties();
+            properties.load(in);
+            // 将 file 中定义的 key 写入 namesrvConfig 或 nettyServerConfig
+            MixAll.properties2Object(properties, namesrvConfig);
+            MixAll.properties2Object(properties, nettyServerConfig);
 
-                namesrvConfig.setConfigStorePath(file);
-
-                System.out.printf("load config properties file OK, %s%n", file);
-                in.close();
-            }
+            namesrvConfig.setConfigStorePath(file);
         }
-
-        // 启动的时候设置了 -p 参数
-        if (commandLine.hasOption('p')) {
-            InternalLogger console = InternalLoggerFactory.getLogger(LoggerName.NAMESRV_CONSOLE_NAME);
-            MixAll.printObjectProperties(console, namesrvConfig);
-            MixAll.printObjectProperties(console, nettyServerConfig);
-            System.exit(0);
-        }
-
-        // 命令行配置优先级更高
-        MixAll.properties2Object(ServerUtil.commandLine2Properties(commandLine), namesrvConfig);
-
-        if (null == namesrvConfig.getRocketmqHome()) {
-            System.out.printf("Please set the %s variable in your environment to match the location of the RocketMQ installation%n", MixAll.ROCKETMQ_HOME_ENV);
-            System.exit(-2);
-        }
-
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        JoranConfigurator configurator = new JoranConfigurator();
-        configurator.setContext(lc);
-        lc.reset();
-        configurator.doConfigure(namesrvConfig.getRocketmqHome() + "/conf/logback_namesrv.xml");
-
-        log = InternalLoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
-
-        MixAll.printObjectProperties(log, namesrvConfig);
-        MixAll.printObjectProperties(log, nettyServerConfig);
 
         // 创建一个 NamesrvController 实栗
         final NamesrvController controller = new NamesrvController(namesrvConfig, nettyServerConfig);
@@ -144,36 +98,10 @@ public class NamesrvStartup {
         return controller;
     }
 
-    // 启动 NamesrvController
     public static NamesrvController start(final NamesrvController controller) throws Exception {
-
-        if (null == controller) {
-            throw new IllegalArgumentException("NamesrvController is null");
-        }
-
-        // NamesrvController 初始化
-        boolean initResult = controller.initialize();
-        if (!initResult) {
-            controller.shutdown();
-            System.exit(-3);
-        }
-
-        // 配置执行停止的时候执行的钩子，log 是 Logger，用于打印，执行 NamesrvController 的 shutdown 操作
-        Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(log, new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                controller.shutdown();
-                return null;
-            }
-        }));
-        // 终于要启动啦 :)
+        controller.initialize();
         controller.start();
-
         return controller;
-    }
-
-    public static void shutdown(final NamesrvController controller) {
-        controller.shutdown();
     }
 
     // build -c config 文件 -p 命令行上的配置
