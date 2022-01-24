@@ -30,6 +30,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.apache.rocketmq.common.DataVersion;
 import org.apache.rocketmq.common.MixAll;
 import org.apache.rocketmq.common.TopicConfig;
@@ -46,8 +48,6 @@ import org.apache.rocketmq.common.protocol.route.QueueData;
 import org.apache.rocketmq.common.protocol.route.TopicRouteData;
 import org.apache.rocketmq.common.sysflag.TopicSysFlag;
 import org.apache.rocketmq.remoting.common.RemotingUtil;
-
-// Namesrv 上的路由信息管理器
 
 public class RouteInfoManager {
     private static final InternalLogger log = InternalLoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
@@ -75,7 +75,6 @@ public class RouteInfoManager {
         this.filterServerTable = new HashMap<String, List<String>>(256);
     }
 
-    // 获取全部 cluster 的 info
     public byte[] getAllClusterInfo() {
         ClusterInfo clusterInfoSerializeWrapper = new ClusterInfo();
         clusterInfoSerializeWrapper.setBrokerAddrTable(this.brokerAddrTable);
@@ -83,12 +82,10 @@ public class RouteInfoManager {
         return clusterInfoSerializeWrapper.encode();
     }
 
-    // 删除指定的 topic
     public void deleteTopic(final String topic) {
         this.topicQueueTable.remove(topic);
     }
 
-    // 获取全部的 Topic 组成的列表
     public byte[] getAllTopicList() {
         TopicList topicList = new TopicList();
         topicList.getTopicList().addAll(this.topicQueueTable.keySet());
@@ -96,7 +93,6 @@ public class RouteInfoManager {
         return topicList.encode();
     }
 
-    // 注册 Broker
     // broker 启动或者管理控制台提交 topic 配置变更给 broker 以后，broker 会发起 register 到 namserver 的动作，把 broker
     // 自己的元数据以及管理的 topic 一起提交给 nameserver 进行管理，这些信息最后组成所谓的路由信息，由生产者和消费者来使用
     public RegisterBrokerResult registerBroker(
@@ -128,13 +124,7 @@ public class RouteInfoManager {
         //Switch slave to master: first remove <1, IP:PORT> in namesrv, then add <0, IP:PORT>
         //The same IP:PORT must only have one record in brokerAddrTable
         // 删除 brokerAddrsMap 中 brokerAddr 与传入参数相同但是 brokerId 不同的记录
-        Iterator<Entry<Long, String>> it = brokerAddrsMap.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<Long, String> item = it.next();
-            if (null != brokerAddr && brokerAddr.equals(item.getValue()) && brokerId != item.getKey()) {
-                it.remove();
-            }
-        }
+        brokerAddrsMap.entrySet().removeIf(item -> null != brokerAddr && brokerAddr.equals(item.getValue()) && brokerId != item.getKey());
         // 如果 oldAddr 不为 null，则 brokerId 对应一个旧的 brokerAddr
         String oldAddr = brokerData.getBrokerAddrs().put(brokerId, brokerAddr);
         registerFirst = registerFirst || (null == oldAddr);
@@ -180,7 +170,6 @@ public class RouteInfoManager {
         return result;
     }
 
-    // 判断 Broker 上的 TopicConfig 是否改变
     public boolean isBrokerTopicConfigChanged(final String brokerAddr, final DataVersion dataVersion) {
         DataVersion prev = queryBrokerTopicConfig(brokerAddr);
         return null == prev || !prev.equals(dataVersion);
@@ -203,7 +192,6 @@ public class RouteInfoManager {
         }
     }
 
-    // 创建/更新 QueueData
     private void createAndUpdateQueueData(final String brokerName, final TopicConfig topicConfig) {
         // 新建一个 QueueData 实栗
         QueueData queueData = new QueueData();
@@ -285,7 +273,6 @@ public class RouteInfoManager {
         return wipeTopicCnt;
     }
 
-    // 下线一个 Broker 机器
     public void unregisterBroker(final String clusterName, final String brokerAddr, final String brokerName, final long brokerId) {
         BrokerLiveInfo brokerLiveInfo = this.brokerLiveTable.remove(brokerAddr);
 
@@ -732,54 +719,11 @@ public class RouteInfoManager {
 }
 
 // 活着的 Broker 的 Info
+@Data
+@AllArgsConstructor
 class BrokerLiveInfo {
-    private long lastUpdateTimestamp;  // 上一次更新的时间
-    private DataVersion dataVersion;  // 数据版本
+    private long lastUpdateTimestamp;
+    private DataVersion dataVersion;
     private Channel channel;
     private String haServerAddr;
-
-    public BrokerLiveInfo(long lastUpdateTimestamp, DataVersion dataVersion, Channel channel, String haServerAddr) {
-        this.lastUpdateTimestamp = lastUpdateTimestamp;
-        this.dataVersion = dataVersion;
-        this.channel = channel;
-        this.haServerAddr = haServerAddr;
-    }
-
-    public long getLastUpdateTimestamp() {
-        return lastUpdateTimestamp;
-    }
-
-    public void setLastUpdateTimestamp(long lastUpdateTimestamp) {
-        this.lastUpdateTimestamp = lastUpdateTimestamp;
-    }
-
-    public DataVersion getDataVersion() {
-        return dataVersion;
-    }
-
-    public void setDataVersion(DataVersion dataVersion) {
-        this.dataVersion = dataVersion;
-    }
-
-    public Channel getChannel() {
-        return channel;
-    }
-
-    public void setChannel(Channel channel) {
-        this.channel = channel;
-    }
-
-    public String getHaServerAddr() {
-        return haServerAddr;
-    }
-
-    public void setHaServerAddr(String haServerAddr) {
-        this.haServerAddr = haServerAddr;
-    }
-
-    @Override
-    public String toString() {
-        return "BrokerLiveInfo [lastUpdateTimestamp=" + lastUpdateTimestamp + ", dataVersion=" + dataVersion
-                + ", channel=" + channel + ", haServerAddr=" + haServerAddr + "]";
-    }
 }
