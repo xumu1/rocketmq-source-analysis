@@ -16,11 +16,13 @@
  */
 package org.apache.rocketmq.namesrv;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import lombok.Data;
 import org.apache.rocketmq.common.Configuration;
 import org.apache.rocketmq.common.ThreadFactoryImpl;
 import org.apache.rocketmq.common.constant.LoggerName;
@@ -39,28 +41,25 @@ import org.apache.rocketmq.remoting.netty.NettyServerConfig;
 import org.apache.rocketmq.remoting.netty.TlsSystemConfig;
 import org.apache.rocketmq.srvutil.FileWatchService;
 
-// Namesrv 控制器
+@Data
 public class NamesrvController {
     private static final InternalLogger log = InternalLoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);
 
-    private final NamesrvConfig namesrvConfig;  // 命令行传递进来的 Namesrv 的配置
+    private final NamesrvConfig namesrvConfig;
 
-    private final NettyServerConfig nettyServerConfig;  // 命令行传递进来的 NettyServer 配置
+    private final NettyServerConfig nettyServerConfig;
 
-    // 该线程专门做定期处理工作
-    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryImpl(
-            "NSScheduledThread"));
-    // 管理 kv pair，configTable
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryImpl("NSScheduledThread"));
     private final KVConfigManager kvConfigManager;
-    private final RouteInfoManager routeInfoManager;  // 管理 Namesrv 的路由信息
+    private final RouteInfoManager routeInfoManager;
 
     private RemotingServer remotingServer;
 
-    private BrokerHousekeepingService brokerHousekeepingService;
+    private final BrokerHousekeepingService brokerHousekeepingService;
 
     private ExecutorService remotingExecutor;
 
-    private Configuration configuration;
+    private final Configuration configuration;
     private FileWatchService fileWatchService;
 
     public NamesrvController(NamesrvConfig namesrvConfig, NettyServerConfig nettyServerConfig) {
@@ -69,44 +68,26 @@ public class NamesrvController {
         this.kvConfigManager = new KVConfigManager(this);
         this.routeInfoManager = new RouteInfoManager();
         this.brokerHousekeepingService = new BrokerHousekeepingService(this);
-        this.configuration = new Configuration(
-                log,
-                this.namesrvConfig,
-                this.nettyServerConfig
-        );
+        this.configuration = new Configuration(log, this.namesrvConfig, this.nettyServerConfig);
         this.configuration.setStorePathFromConfig(this.namesrvConfig, "configStorePath");
     }
 
-    // NamesrvStartup 的 start(NamesrvController) 方法会调用 initialize
-    public boolean initialize() {
+    public boolean initialize() throws IOException {
 
         this.kvConfigManager.load();
 
         // 创建 server 实例
         this.remotingServer = new NettyRemotingServer(this.nettyServerConfig, this.brokerHousekeepingService);
 
-        this.remotingExecutor =
-                Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(), new ThreadFactoryImpl("RemotingExecutorThread_"));
+        this.remotingExecutor = Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(), new ThreadFactoryImpl("RemotingExecutorThread_"));
 
         this.registerProcessor();
 
         // 每隔 10s 检查不活跃的 broker
-        this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-
-            @Override
-            public void run() {
-                NamesrvController.this.routeInfoManager.scanNotActiveBroker();
-            }
-        }, 5, 10, TimeUnit.SECONDS);
+        this.scheduledExecutorService.scheduleAtFixedRate(NamesrvController.this.routeInfoManager::scanNotActiveBroker, 5, 10, TimeUnit.SECONDS);
 
         // 每隔 10m 打印当前 configTable 中的所有 kv pair
-        this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-
-            @Override
-            public void run() {
-                NamesrvController.this.kvConfigManager.printAllPeriodically();
-            }
-        }, 1, 10, TimeUnit.MINUTES);
+        this.scheduledExecutorService.scheduleAtFixedRate(NamesrvController.this.kvConfigManager::printAllPeriodically, 1, 10, TimeUnit.MINUTES);
 
         if (TlsSystemConfig.tlsMode != TlsMode.DISABLED) {
             // Register a listener to reload SslContext
@@ -151,24 +132,17 @@ public class NamesrvController {
         return true;
     }
 
-    // 根据 cluster 是否为测试环境，选择不同的 Processor
     private void registerProcessor() {
         if (namesrvConfig.isClusterTest()) {
-
-            this.remotingServer.registerDefaultProcessor(new ClusterTestRequestProcessor(this, namesrvConfig.getProductEnvName()),
-                    this.remotingExecutor);
+            this.remotingServer.registerDefaultProcessor(new ClusterTestRequestProcessor(this, namesrvConfig.getProductEnvName()), this.remotingExecutor);
         } else {
-
             this.remotingServer.registerDefaultProcessor(new DefaultRequestProcessor(this), this.remotingExecutor);
         }
     }
 
     public void start() throws Exception {
         this.remotingServer.start();
-
-        if (this.fileWatchService != null) {
-            this.fileWatchService.start();
-        }
+        this.fileWatchService.start();
     }
 
     public void shutdown() {
@@ -179,33 +153,5 @@ public class NamesrvController {
         if (this.fileWatchService != null) {
             this.fileWatchService.shutdown();
         }
-    }
-
-    public NamesrvConfig getNamesrvConfig() {
-        return namesrvConfig;
-    }
-
-    public NettyServerConfig getNettyServerConfig() {
-        return nettyServerConfig;
-    }
-
-    public KVConfigManager getKvConfigManager() {
-        return kvConfigManager;
-    }
-
-    public RouteInfoManager getRouteInfoManager() {
-        return routeInfoManager;
-    }
-
-    public RemotingServer getRemotingServer() {
-        return remotingServer;
-    }
-
-    public void setRemotingServer(RemotingServer remotingServer) {
-        this.remotingServer = remotingServer;
-    }
-
-    public Configuration getConfiguration() {
-        return configuration;
     }
 }

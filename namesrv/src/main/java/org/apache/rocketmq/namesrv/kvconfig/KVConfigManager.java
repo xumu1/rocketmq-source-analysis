@@ -36,37 +36,21 @@ public class KVConfigManager {
 
     private final NamesrvController namesrvController;
 
-    // 读写锁，限制访问 configTable
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final HashMap<String/* Namespace */, HashMap<String/* Key */, String/* Value */>> configTable =
-            new HashMap<String, HashMap<String, String>>();
+    private final HashMap<String/* Namespace */, HashMap<String/* Key */, String/* Value */>> configTable = new HashMap<String, HashMap<String, String>>();
 
     public KVConfigManager(NamesrvController namesrvController) {
         this.namesrvController = namesrvController;
     }
 
-    // 加载 JSON 文件
-    public void load() {
+    public void load() throws IOException {
         String content = null;
-        try {
-            // 将 fileName 中的配置转为 String
-            content = MixAll.file2String(this.namesrvController.getNamesrvConfig().getKvConfigPath());
-        } catch (IOException e) {
-            log.warn("Load KV config table exception", e);
-        }
-        if (content != null) {
-            // KVConfigSerializeWrapper 继承了 RemotingSerializable，fromJson 就是将 JsonString 解析为
-            // KVConfigSerializeWrapper 对象
-            KVConfigSerializeWrapper kvConfigSerializeWrapper =
-                    KVConfigSerializeWrapper.fromJson(content, KVConfigSerializeWrapper.class);
-            if (null != kvConfigSerializeWrapper) {
-                this.configTable.putAll(kvConfigSerializeWrapper.getConfigTable());
-                log.info("load KV config table OK");
-            }
-        }
+        // 将 fileName 中的配置转为 String
+        content = MixAll.file2String(this.namesrvController.getNamesrvConfig().getKvConfigPath());
+        KVConfigSerializeWrapper kvConfigSerializeWrapper = KVConfigSerializeWrapper.fromJson(content, KVConfigSerializeWrapper.class);
+        this.configTable.putAll(kvConfigSerializeWrapper.getConfigTable());
     }
 
-    // 写入配置
     public void putKVConfig(final String namespace, final String key, final String value) {
         // configTable getOrCreate namespace 指代的 HashMap
         HashMap<String, String> kvTable = this.configTable.get(namespace);
@@ -77,80 +61,52 @@ public class KVConfigManager {
         }
 
         final String prev = kvTable.put(key, value);
-        if (null != prev) {
-            log.info("putKVConfig update config item, Namespace: {} Key: {} Value: {}",
-                    namespace, key, value);
-        } else {
-            log.info("putKVConfig create new config item, Namespace: {} Key: {} Value: {}",
-                    namespace, key, value);
-        }
-
         // 持久化
         this.persist();
     }
 
-    // 持久化 
     public void persist() {
         // 序列化为一个 JSON 字符串
         KVConfigSerializeWrapper kvConfigSerializeWrapper = new KVConfigSerializeWrapper();
         kvConfigSerializeWrapper.setConfigTable(this.configTable);
 
         String content = kvConfigSerializeWrapper.toJson();
-        if (null != content) {
-            // 将 JSON 字符串落盘
-            try {
-                MixAll.string2File(content, this.namesrvController.getNamesrvConfig().getKvConfigPath());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        // 将 JSON 字符串落盘
+        try {
+            MixAll.string2File(content, this.namesrvController.getNamesrvConfig().getKvConfigPath());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
     }
 
-    // 删除 configTable 指定命名空间下的 key
     public void deleteKVConfig(final String namespace, final String key) {
         HashMap<String, String> kvTable = this.configTable.get(namespace);
-        if (null != kvTable) {
-            String value = kvTable.remove(key);
-            log.info("deleteKVConfig delete a config item, Namespace: {} Key: {} Value: {}",
-                    namespace, key, value);
-        }
+        kvTable.remove(key);
         this.persist();
     }
 
-    // 获取指定 namespace 的 KVList
     public byte[] getKVListByNamespace(final String namespace) {
         HashMap<String, String> kvTable = this.configTable.get(namespace);
-        if (null != kvTable) {
-            KVTable table = new KVTable();
-            table.setTable(kvTable);
-            // 拿到 namespace 对应的 HashMap，然后序列化
-            return table.encode();
-        }
-        return null;
+        KVTable table = new KVTable();
+        table.setTable(kvTable);
+        // 拿到 namespace 对应的 HashMap，然后序列化
+        return table.encode();
     }
 
-    // 获取执行命名空间中 key 对应的 value
     public String getKVConfig(final String namespace, final String key) {
         HashMap<String, String> kvTable = this.configTable.get(namespace);
-        if (null != kvTable) {
-            return kvTable.get(key);
-        }
-        return null;
+        return kvTable.get(key);
     }
 
-    // 定期打印所有 kv pair
     public void printAllPeriodically() {
         log.info("configTable SIZE: {}", this.configTable.size());
-        Iterator<Entry<String, HashMap<String, String>>> it =
-                this.configTable.entrySet().iterator();
+        Iterator<Entry<String, HashMap<String, String>>> it = this.configTable.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, HashMap<String, String>> next = it.next();
             Iterator<Entry<String, String>> itSub = next.getValue().entrySet().iterator();
             while (itSub.hasNext()) {
                 Entry<String, String> nextSub = itSub.next();
-                log.info("configTable NS: {} Key: {} Value: {}", next.getKey(), nextSub.getKey(),
-                        nextSub.getValue());
+                log.info("configTable NS: {} Key: {} Value: {}", next.getKey(), nextSub.getKey(), nextSub.getValue());
             }
         }
     }

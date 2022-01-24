@@ -22,6 +22,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class KVConfigManagerTest extends NameServerInstanceTest {
@@ -33,7 +35,7 @@ public class KVConfigManagerTest extends NameServerInstanceTest {
     }
 
     @Test
-    public void testPutKVConfig() {
+    public void testPutKVConfig() throws IOException {
         kvConfigManager.putKVConfig(NamesrvUtil.NAMESPACE_ORDER_TOPIC_CONFIG, "UnitTest", "test");
         byte[] kvConfig = kvConfigManager.getKVListByNamespace(NamesrvUtil.NAMESPACE_ORDER_TOPIC_CONFIG);
         assertThat(kvConfig).isNotNull();
