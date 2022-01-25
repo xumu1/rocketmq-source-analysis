@@ -95,15 +95,8 @@ public class RouteInfoManager {
 
     // broker 启动或者管理控制台提交 topic 配置变更给 broker 以后，broker 会发起 register 到 namserver 的动作，把 broker
     // 自己的元数据以及管理的 topic 一起提交给 nameserver 进行管理，这些信息最后组成所谓的路由信息，由生产者和消费者来使用
-    public RegisterBrokerResult registerBroker(
-            final String clusterName,
-            final String brokerAddr,
-            final String brokerName,
-            final long brokerId,
-            final String haServerAddr,
-            final TopicConfigSerializeWrapper topicConfigWrapper,
-            final List<String> filterServerList,
-            final Channel channel) {
+    public RegisterBrokerResult registerBroker(final String clusterName, final String brokerAddr, final String brokerName, final long brokerId, final String haServerAddr,
+                                               final TopicConfigSerializeWrapper topicConfigWrapper, final List<String> filterServerList, final Channel channel) {
         RegisterBrokerResult result = new RegisterBrokerResult();
 
         // 将 brokerName 加入 clusterName 对应的 Set
@@ -718,7 +711,7 @@ public class RouteInfoManager {
     }
 }
 
-// 活着的 Broker 的 Info
+// 活着的 Broker
 @Data
 @AllArgsConstructor
 class BrokerLiveInfo {
