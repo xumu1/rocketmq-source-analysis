@@ -62,16 +62,6 @@ public class BrokerStartup {
         try {
             // createBrokerController 里面已经初始化过了，这里 start
             controller.start();
-
-            String tip = "The broker[" + controller.getBrokerConfig().getBrokerName() + ", "
-                    + controller.getBrokerAddr() + "] boot success. serializeType=" + RemotingCommand.getSerializeTypeConfigInThisServer();
-
-            if (null != controller.getBrokerConfig().getNamesrvAddr()) {
-                tip += " and name server is " + controller.getBrokerConfig().getNamesrvAddr();
-            }
-
-            log.info(tip);
-            System.out.printf("%s%n", tip);
             return controller;
         } catch (Throwable e) {
             e.printStackTrace();
@@ -82,30 +72,13 @@ public class BrokerStartup {
     }
 
     public static void shutdown(final BrokerController controller) {
-        if (null != controller) {
-            controller.shutdown();
-        }
+        controller.shutdown();
     }
 
-    // 创建一个 BrokerController 实栗
     public static BrokerController createBrokerController(String[] args) {
-        System.setProperty(RemotingCommand.REMOTING_VERSION_KEY, Integer.toString(MQVersion.CURRENT_VERSION));
-
-        if (null == System.getProperty(NettySystemConfig.COM_ROCKETMQ_REMOTING_SOCKET_SNDBUF_SIZE)) {
-            NettySystemConfig.socketSndbufSize = 131072;
-        }
-
-        if (null == System.getProperty(NettySystemConfig.COM_ROCKETMQ_REMOTING_SOCKET_RCVBUF_SIZE)) {
-            NettySystemConfig.socketRcvbufSize = 131072;
-        }
 
         try {
-            //PackageConflictDetect.detectFastjson();
-            Options options = ServerUtil.buildCommandlineOptions(new Options());
-            commandLine = ServerUtil.parseCmdLine("mqbroker", args, buildCommandlineOptions(options), new PosixParser());
-            if (null == commandLine) {
-                System.exit(-1);
-            }
+            commandLine = ServerUtil.parseCmdLine("mqbroker", args, buildCommandlineOptions(ServerUtil.buildCommandlineOptions(new Options())), new PosixParser());
 
             final BrokerConfig brokerConfig = new BrokerConfig();
             final NettyServerConfig nettyServerConfig = new NettyServerConfig();

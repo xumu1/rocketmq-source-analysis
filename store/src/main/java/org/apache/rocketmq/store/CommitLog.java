@@ -48,7 +48,7 @@ import org.apache.rocketmq.store.schedule.ScheduleMessageService;
 // ConsumeQueue 是消息的逻辑队列，相当于字典的目录，用来指定消息在物理文件 CommitLog 上的位置
 // 所有消息都存在一个单一的 CommitLog 文件里面，然后有后台线程异步的同步到 ConsumeQueue，再由 Consumer 进行消费。
 // 而 RocketMQ 为 Producer 和 Consumer 分别设计了不同的存储结构，Producer 对应 CommitLog, Consumer 对应 ConsumeQueue。
-// 这里至所以可以用异步线程，也是因为消息队列天生就是用来缓冲消息的。只要消息到了 CommitLog，发送的消息也就不会丢。
+// 这里之所以可以用异步线程，也是因为消息队列天生就是用来缓冲消息的。只要消息到了 CommitLog，发送的消息也就不会丢。
 // 只要消息不丢，那就有了充足的回旋余地，用一个后台线程慢慢同步到 ConsumeQueue，再由 Consumer 消费。可以说，这也是在消息
 // 队列内部的一个典型的最终一致性的案例：Producer 发了消息，进了 CommitLog，此时 Consumer 并不可见。但没关系，只要消息不丢，
 // 消息最终肯定会进入 ConsumeQueue，让 Consumer 可见
@@ -86,7 +86,6 @@ public class CommitLog {
     private volatile long beginTimeInLock = 0;  // 开始上锁的时间
     protected final PutMessageLock putMessageLock;  // put Msg 时候上的锁
 
-    // 构造函数
     public CommitLog(final DefaultMessageStore defaultMessageStore) {
         this.mappedFileQueue = new MappedFileQueue(defaultMessageStore.getMessageStoreConfig().getStorePathCommitLog(),
                 defaultMessageStore.getMessageStoreConfig().getMappedFileSizeCommitLog(), defaultMessageStore.getAllocateMappedFileService());
@@ -161,11 +160,7 @@ public class CommitLog {
     }
 
     // delete 过期的 MappedFile，可以从 File 对象获取 lastModified
-    public int deleteExpiredFile(
-            final long expiredTime,
-            final int deleteFilesInterval,
-            final long intervalForcibly,
-            final boolean cleanImmediately
+    public int deleteExpiredFile(final long expiredTime, final int deleteFilesInterval, final long intervalForcibly, final boolean cleanImmediately
     ) {
         return this.mappedFileQueue.deleteExpiredFileByTime(expiredTime, deleteFilesInterval, intervalForcibly, cleanImmediately);
     }

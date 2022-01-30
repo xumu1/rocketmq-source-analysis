@@ -30,7 +30,7 @@ import org.apache.rocketmq.common.constant.LoggerName;
 import org.apache.rocketmq.logging.InternalLogger;
 import org.apache.rocketmq.logging.InternalLoggerFactory;
 
-// 包含了很多 MappedFile，以及每个 MapedFile 的真实大小
+// 包含了很多 MappedFile，以及每个 MappedFile 的真实大小
 // MappedFile: 包含了具体的文件信息，包括文件路径，文件名，文件起始偏移，写位移，读位移等等信息，同时使用了虚拟内存映射来提高 IO 效率
 // 无论 CommitLog，还是 ConsumeQueue，都有一个对应的 MappedFileQueue，也就是对应的内存映射文件的数组
 // 读写时，根据 offset 定位到数组中对应的 MappedFile，进行读写，通过 MappedFile，就很好的解决了大文件随机读的性能问题

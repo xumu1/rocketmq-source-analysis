@@ -616,8 +616,7 @@ public class MessageStoreConfig {
      * @return <tt>true</tt> or <tt>false</tt>
      */
     public boolean isTransientStorePoolEnable() {
-        return transientStorePoolEnable && FlushDiskType.ASYNC_FLUSH == getFlushDiskType()
-                && BrokerRole.SLAVE != getBrokerRole();
+        return transientStorePoolEnable && FlushDiskType.ASYNC_FLUSH == getFlushDiskType() && BrokerRole.SLAVE != getBrokerRole();
     }
 
     public void setTransientStorePoolEnable(final boolean transientStorePoolEnable) {
