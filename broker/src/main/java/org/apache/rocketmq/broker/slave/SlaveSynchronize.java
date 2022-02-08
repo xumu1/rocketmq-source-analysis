@@ -63,17 +63,13 @@ public class SlaveSynchronize {
         // 当 master 地址不为空，且 broker 不为 master 的时候
         if (masterAddrBak != null && !masterAddrBak.equals(brokerController.getBrokerAddr())) {
             try {
-                TopicConfigSerializeWrapper topicWrapper =
-                        this.brokerController.getBrokerOuterAPI().getAllTopicConfig(masterAddrBak);
+                TopicConfigSerializeWrapper topicWrapper = this.brokerController.getBrokerOuterAPI().getAllTopicConfig(masterAddrBak);
                 // 从 master 处拿来的 TopicConfig，比对数据版本
-                if (!this.brokerController.getTopicConfigManager().getDataVersion()
-                        .equals(topicWrapper.getDataVersion())) {
+                if (!this.brokerController.getTopicConfigManager().getDataVersion().equals(topicWrapper.getDataVersion())) {
                     // 将 master 处的 TopicConfig 复制到本 broker
-                    this.brokerController.getTopicConfigManager().getDataVersion()
-                            .assignNewOne(topicWrapper.getDataVersion());
+                    this.brokerController.getTopicConfigManager().getDataVersion().assignNewOne(topicWrapper.getDataVersion());
                     this.brokerController.getTopicConfigManager().getTopicConfigTable().clear();
-                    this.brokerController.getTopicConfigManager().getTopicConfigTable()
-                            .putAll(topicWrapper.getTopicConfigTable());
+                    this.brokerController.getTopicConfigManager().getTopicConfigTable().putAll(topicWrapper.getTopicConfigTable());
                     this.brokerController.getTopicConfigManager().persist();
 
                     log.info("Update slave topic config from master, {}", masterAddrBak);
